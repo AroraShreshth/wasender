@@ -6,6 +6,7 @@
 [![NPM Downloads](https://img.shields.io/npm/dm/wasender?style=flat)](https://www.npmjs.com/package/wasender)
 [![License](https://img.shields.io/npm/l/wasender?style=flat)](https://github.com/shreszar/wasender-sdk/blob/main/LICENSE)
 [![TypeScript](https://img.shields.io/badge/written%20in-TypeScript-blue?style=flat&logo=typescript)](https://www.typescriptlang.org/)
+[![CI](https://github.com/AroraShreshth/wasender/actions/workflows/ci.yml/badge.svg)](https://github.com/AroraShreshth/wasender/actions/workflows/ci.yml)
 
 A lightweight and robust TypeScript SDK for interacting with the Wasender API ([https://www.wasenderapi.com](https://www.wasenderapi.com)). This SDK simplifies sending various types of WhatsApp messages, managing contacts and groups, handling session statuses, and processing incoming webhooks.
 

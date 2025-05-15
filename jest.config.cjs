@@ -6,6 +6,10 @@ module.exports = {
   moduleFileExtensions: ['ts', 'js', 'json'],
   setupFilesAfterEnv: ['jest-extended', '<rootDir>/jest.setup.ts'],
   collectCoverage: true,
+  collectCoverageFrom: [
+    'src/**/*.{ts,js}',
+    '!src/**/*.d.ts'
+  ],
   coverageDirectory: 'coverage',
   // coverageThreshold: {
   //   global: { branches: 85, functions: 90, lines: 90, statements: 90 }
@@ -14,5 +18,5 @@ module.exports = {
     '^.+\\\.ts$': ['ts-jest', {
       tsconfig: 'tsconfig.json'
     }],
-  }
+  },
 }; 
