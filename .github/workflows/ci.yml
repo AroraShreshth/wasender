@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x]
-        package-manager: [npm, pnpm]
+        package-manager: [npm]
 
     steps:
       # 1) Checkout
