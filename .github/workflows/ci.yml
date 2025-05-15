@@ -9,19 +9,32 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # Install Node + pnpm
-      - uses: pnpm/action-setup@v2
+      # Setup Node.js using the version from the matrix
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: true # enables pnpm cache automatically
+          cache: "pnpm" # built-in pnpm cache support
 
-      # Restore pnpm store (optional with cache: true above)
-      #- uses: actions/cache@v3
-      #  with:
-      #    path: ~/.pnpm-store
-      #    key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+      # Install pnpm
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8 # ← this is mandatory
+          run_install: false # skip its built-in install step
 
-      - run: pnpm install --frozen-lockfile
+      # Optional: Restore pnpm store if needed, but pnpm/action-setup often handles caching well.
+      # The pnpm/action-setup action itself usually configures caching for pnpm's store.
+      # If more explicit control over caching is needed, actions/cache can be used here.
+      # - uses: actions/cache@v3
+      #   with:
+      #     path: ~/.pnpm-store
+      #     key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       # Lint early to catch style errors
       - name: Lint
@@ -35,9 +48,3 @@ jobs:
 
       - name: Coverage
         run: pnpm run coverage
-
-      # (Optional) upload to Codecov
-      - name: Upload coverage
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
