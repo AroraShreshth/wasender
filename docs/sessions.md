@@ -2,7 +2,7 @@
 
 This document provides comprehensive examples for managing WhatsApp sessions using the Wasender TypeScript SDK. It covers creating, retrieving, updating, deleting sessions, handling connections (QR codes), and checking session status.
 
-## SDK Version: 0.3.2
+## SDK Version: 0.1.0
 
 ## Prerequisites
 

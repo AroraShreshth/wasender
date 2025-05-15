@@ -2,7 +2,7 @@
 
 This document provides examples for managing contacts using the Wasender TypeScript SDK, including retrieving contacts, getting specific contact details, fetching profile pictures, and blocking/unblocking contacts.
 
-## SDK Version: 0.3.2
+## SDK Version: 0.1.0
 
 ## Prerequisites
 

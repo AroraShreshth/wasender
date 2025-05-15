@@ -2,7 +2,7 @@
 
 This document provides examples for managing WhatsApp groups using the Wasender TypeScript SDK. It covers retrieving group lists, fetching metadata and participant details, modifying participants, updating group settings, and sending messages to groups.
 
-## SDK Version: 0.3.2
+## SDK Version: 0.1.0
 
 ## Prerequisites
 

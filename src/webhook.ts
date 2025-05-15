@@ -1,7 +1,7 @@
 /*
  * Wasender TypeScript SDK - Webhook Utilities
  * Provides helpers for verifying and typing incoming webhook events from Wasender.
- * Version: 0.3.2
+ * Version: 0.1.0
  */
 
 /**
