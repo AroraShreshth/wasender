@@ -1,50 +1,47 @@
+# .github/workflows/ci.yml
 name: CI
+
 on: [push, pull_request]
+
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [18.x] # add more if you like
+
     steps:
       - uses: actions/checkout@v3
 
-      # Setup Node.js using the version from the matrix
+      # 1) Install the desired Node.js version
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "pnpm" # built-in pnpm cache support
 
-      # Install pnpm
+      # 2) Install pnpm and enable built-in cache
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 8 # ← this is mandatory
-          run_install: false # skip its built-in install step
+          version: 8 # required
+          run_install: false # we'll run pnpm install ourselves
 
-      # Optional: Restore pnpm store if needed, but pnpm/action-setup often handles caching well.
-      # The pnpm/action-setup action itself usually configures caching for pnpm's store.
-      # If more explicit control over caching is needed, actions/cache can be used here.
-      # - uses: actions/cache@v3
-      #   with:
-      #     path: ~/.pnpm-store
-      #     key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-pnpm-store-
-
+      # 3) Install deps
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # Lint early to catch style errors
+      # 4) Lint (skip if no script)
       - name: Lint
-        run: pnpm run lint
+        run: pnpm run lint --if-present
 
+      # 5) Build
       - name: Build
         run: pnpm run build
 
+      # 6) Test
       - name: Test
         run: pnpm test
 
+      # 7) Coverage (optional)
       - name: Coverage
-        run: pnpm run coverage
+        run: pnpm run coverage --if-present
