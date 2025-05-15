@@ -126,7 +126,7 @@ import { GroupParticipant as GroupParticipantObject } from './groups'; // This i
 
 export interface GroupParticipantsUpdateData {
   jid: string; // Group JID
-  participants: Array<string | GroupParticipant>; // Array of participant JIDs affected or participant objects
+  participants: Array<string | GroupParticipantObject>; // Array of participant JIDs affected or participant objects
   action: 'add' | 'remove' | 'promote' | 'demote';
 }
 export type GroupParticipantsUpdateEvent = BaseWebhookEvent<WasenderWebhookEventType.GroupParticipantsUpdate, GroupParticipantsUpdateData>;

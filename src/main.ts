@@ -313,11 +313,11 @@ export class Wasender {
 
   // General purpose POST (adapted from original post for sending messages)
   private async postInternal<
-    TPayload extends Record<string, any>, // Generic payload for POST
+    TPayload extends Record<string, any> | null, // Generic payload for POST, now allowing null
     TSuccessResponse extends WasenderSuccessResponse // Generic success response
   >(
     path: string,
-    payload: TPayload | null // Payload can be null for block/unblock
+    payload: TPayload // Payload can be null for block/unblock
   ): Promise<{ response: TSuccessResponse; rateLimit: RateLimitInfo }> {
     // Remove messageType if present, as it was specific to send-message
     const apiPayload = payload ? { ...payload } : null;
