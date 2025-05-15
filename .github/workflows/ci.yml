@@ -1,47 +1,78 @@
 # .github/workflows/ci.yml
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [main]
+  pull_request:
 
 jobs:
-  test:
+  build-and-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x] # add more if you like
+        node-version: [18.x]
+        package-manager: [npm, pnpm]
 
     steps:
+      # 1) Checkout
       - uses: actions/checkout@v3
 
-      # 1) Install the desired Node.js version
-      - name: Setup Node.js
+      # 2) Setup Node
+      - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+          cache: ${{ matrix.package-manager }}
 
-      # 2) Install pnpm and enable built-in cache
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8 # required
-          run_install: false # we'll run pnpm install ourselves
+      # 3) If we're using pnpm, install it
+      - name: Install pnpm
+        if: matrix.package-manager == 'pnpm'
+        run: npm install -g pnpm@8
 
-      # 3) Install deps
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      # 4) Install dependencies
+      - name: Install dependencies (${{
+          matrix.package-manager
+          }})
+        run: |
+          if [ "${{ matrix.package-manager }}" = "npm" ]; then
+            npm ci
+          else
+            pnpm install --frozen-lockfile
+          fi
 
-      # 4) Lint (skip if no script)
+      # 5) Lint (if present)
       - name: Lint
-        run: pnpm run lint --if-present
+        run: |
+          if [ "${{ matrix.package-manager }}" = "npm" ]; then
+            npm run lint --if-present
+          else
+            pnpm run lint --if-present
+          fi
 
-      # 5) Build
+      # 6) Build
       - name: Build
-        run: pnpm run build
+        run: |
+          if [ "${{ matrix.package-manager }}" = "npm" ]; then
+            npm run build
+          else
+            pnpm run build
+          fi
 
-      # 6) Test
+      # 7) Test
       - name: Test
-        run: pnpm test
+        run: |
+          if [ "${{ matrix.package-manager }}" = "npm" ]; then
+            npm test
+          else
+            pnpm test
+          fi
 
-      # 7) Coverage (optional)
+      # 8) Coverage (optional)
       - name: Coverage
-        run: pnpm run coverage --if-present
+        run: |
+          if [ "${{ matrix.package-manager }}" = "npm" ]; then
+            npm run coverage --if-present
+          else
+            pnpm run coverage --if-present
+          fi
