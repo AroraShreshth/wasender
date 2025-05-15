@@ -67,12 +67,3 @@ jobs:
           else
             pnpm test
           fi
-
-      # 8) Coverage (optional)
-      - name: Coverage
-        run: |
-          if [ "${{ matrix.package-manager }}" = "npm" ]; then
-            npm run coverage --if-present
-          else
-            pnpm run coverage --if-present
-          fi
