@@ -4,7 +4,7 @@
 
 [![NPM Version](https://img.shields.io/npm/v/wasender?style=flat)](https://www.npmjs.com/package/wasender)
 [![NPM Downloads](https://img.shields.io/npm/dm/wasender?style=flat)](https://www.npmjs.com/package/wasender)
-[![License](https://img.shields.io/npm/l/wasender?style=flat)](https://github.com/shreszar/wasender-sdk/blob/main/LICENSE)
+[![License](https://img.shields.io/npm/l/wasender?style=flat)](https://github.com/AroraShreshth/wasender-sdk/blob/main/LICENSE)
 [![TypeScript](https://img.shields.io/badge/written%20in-TypeScript-blue?style=flat&logo=typescript)](https://www.typescriptlang.org/)
 [![CI](https://github.com/AroraShreshth/wasender/actions/workflows/ci.yml/badge.svg)](https://github.com/AroraShreshth/wasender/actions/workflows/ci.yml)
 
