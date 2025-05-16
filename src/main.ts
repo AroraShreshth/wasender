@@ -106,6 +106,7 @@ export interface WebhookRequestAdapter {
 export class Wasender {
   private readonly baseUrl: string;
   private readonly apiKey: string;
+  private readonly personaAccessToken?: string;
   private readonly fetchImpl: FetchImplementation;
   private readonly retryConfig: Required<RetryConfig>;
   private readonly configuredWebhookSecret?: string;
@@ -115,7 +116,8 @@ export class Wasender {
     baseUrl: string = "https://www.wasenderapi.com/api", 
     fetchImplementation?: FetchImplementation,
     retryOptions?: RetryConfig,
-    webhookSecret?: string
+    webhookSecret?: string,
+    personaAccessToken?: string
   ) {
     if (!apiKey) {
       throw new Error("WASENDER_API_KEY is required to initialize the Wasender SDK.");
@@ -128,6 +130,7 @@ export class Wasender {
         maxRetries: retryOptions?.maxRetries ?? 0,
     };
     this.configuredWebhookSecret = webhookSecret;
+    this.personaAccessToken = personaAccessToken;
 
     if (!this.fetchImpl) {
         throw new Error("Fetch implementation is not available. Please provide one (e.g., for Node.js < 18 by polyfilling globalThis.fetch or passing a custom fetch)." );
@@ -154,14 +157,20 @@ export class Wasender {
     method: "GET" | "POST" | "PUT" | "DELETE",
     path: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    body?: Record<string, any> | null
+    body?: Record<string, any> | null,
+    usePersonaToken: boolean = false
   ): Promise<{ response: TResponse; rateLimit: RateLimitInfo }> {
     const url = `${this.baseUrl}${path}`;
     const requestHeaders: HeadersInit = {
-      "Authorization": `Bearer ${this.apiKey}`,
       "Accept": "application/json",
       "User-Agent": `wasender-typescript-sdk/${SDK_VERSION}`
     };
+
+    if (usePersonaToken && this.personaAccessToken) {
+      requestHeaders["Authorization"] = `Bearer ${this.personaAccessToken}`;
+    } else {
+      requestHeaders["Authorization"] = `Bearer ${this.apiKey}`;
+    }
 
     let processedBody = body ? { ...body } : null;
 
@@ -313,25 +322,26 @@ export class Wasender {
 
   // General purpose POST (adapted from original post for sending messages)
   private async postInternal<
-    TPayload extends Record<string, any> | null, // Generic payload for POST, now allowing null
-    TSuccessResponse extends WasenderSuccessResponse // Generic success response
+    TPayload extends Record<string, any> | null,
+    TSuccessResponse extends WasenderSuccessResponse
   >(
     path: string,
-    payload: TPayload // Payload can be null for block/unblock
+    payload: TPayload,
+    usePersonaToken: boolean = false
   ): Promise<{ response: TSuccessResponse; rateLimit: RateLimitInfo }> {
-    // Remove messageType if present, as it was specific to send-message
     const apiPayload = payload ? { ...payload } : null;
     if (apiPayload && 'messageType' in apiPayload) {
       delete apiPayload.messageType;
     }
-    return this.request<TSuccessResponse>("POST", path, apiPayload);
+    return this.request<TSuccessResponse>("POST", path, apiPayload, usePersonaToken);
   }
   
   // General purpose GET
   private async getInternal<TSuccessResponse extends WasenderSuccessResponse>(
-    path: string
+    path: string,
+    usePersonaToken: boolean = false
   ): Promise<{ response: TSuccessResponse; rateLimit: RateLimitInfo }> {
-    return this.request<TSuccessResponse>("GET", path);
+    return this.request<TSuccessResponse>("GET", path, undefined, usePersonaToken);
   }
 
   // General purpose PUT
@@ -340,16 +350,18 @@ export class Wasender {
     TSuccessResponse extends WasenderSuccessResponse
   >(
     path: string,
-    payload: TPayload
+    payload: TPayload,
+    usePersonaToken: boolean = false
   ): Promise<{ response: TSuccessResponse; rateLimit: RateLimitInfo }> {
-    return this.request<TSuccessResponse>("PUT", path, payload);
+    return this.request<TSuccessResponse>("PUT", path, payload, usePersonaToken);
   }
 
   // General purpose DELETE
   private async deleteInternal<TSuccessResponse extends WasenderSuccessResponse>(
-    path: string
+    path: string,
+    usePersonaToken: boolean = false
   ): Promise<{ response: TSuccessResponse; rateLimit: RateLimitInfo }> {
-    return this.request<TSuccessResponse>("DELETE", path);
+    return this.request<TSuccessResponse>("DELETE", path, undefined, usePersonaToken);
   }
 
   // ---------- Generic Send Method (modified to use postInternal) ----------
@@ -572,7 +584,7 @@ export class Wasender {
    * @throws WasenderAPIError if the request fails.
    */
   public async getAllWhatsAppSessions(): Promise<GetAllWhatsAppSessionsResult> {
-    return this.getInternal<GetAllWhatsAppSessionsResponse>("/whatsapp-sessions");
+    return this.getInternal<GetAllWhatsAppSessionsResponse>("/whatsapp-sessions", true);
   }
 
   /**
@@ -582,7 +594,7 @@ export class Wasender {
    * @throws WasenderAPIError if the request fails.
    */
   public async createWhatsAppSession(payload: CreateWhatsAppSessionPayload): Promise<CreateWhatsAppSessionResult> {
-    return this.postInternal<CreateWhatsAppSessionPayload, CreateWhatsAppSessionResponse>("/whatsapp-sessions", payload);
+    return this.postInternal<CreateWhatsAppSessionPayload, CreateWhatsAppSessionResponse>("/whatsapp-sessions", payload, true);
   }
 
   /**
@@ -593,7 +605,7 @@ export class Wasender {
    */
   public async getWhatsAppSessionDetails(sessionId: number): Promise<GetWhatsAppSessionDetailsResult> {
     if (!sessionId) throw new WasenderAPIError("Session ID is required.", 400);
-    return this.getInternal<GetWhatsAppSessionDetailsResponse>(`/whatsapp-sessions/${sessionId}`);
+    return this.getInternal<GetWhatsAppSessionDetailsResponse>(`/whatsapp-sessions/${sessionId}`, true);
   }
 
   /**
@@ -606,7 +618,7 @@ export class Wasender {
   public async updateWhatsAppSession(sessionId: number, payload: UpdateWhatsAppSessionPayload): Promise<UpdateWhatsAppSessionResult> {
     if (!sessionId) throw new WasenderAPIError("Session ID is required.", 400);
     if (Object.keys(payload).length === 0) throw new WasenderAPIError("Update payload cannot be empty.", 400);
-    return this.putInternal<UpdateWhatsAppSessionPayload, UpdateWhatsAppSessionResponse>(`/whatsapp-sessions/${sessionId}`, payload);
+    return this.putInternal<UpdateWhatsAppSessionPayload, UpdateWhatsAppSessionResponse>(`/whatsapp-sessions/${sessionId}`, payload, true);
   }
 
   /**
@@ -617,7 +629,7 @@ export class Wasender {
    */
   public async deleteWhatsAppSession(sessionId: number): Promise<DeleteWhatsAppSessionResult> {
     if (!sessionId) throw new WasenderAPIError("Session ID is required.", 400);
-    return this.deleteInternal<DeleteWhatsAppSessionResponse>(`/whatsapp-sessions/${sessionId}`);
+    return this.deleteInternal<DeleteWhatsAppSessionResponse>(`/whatsapp-sessions/${sessionId}`, true);
   }
 
   /**
@@ -632,7 +644,8 @@ export class Wasender {
     const payload: ConnectSessionPayload | null = qrAsImage !== undefined ? { qr_as_image: qrAsImage } : null;
     return this.postInternal<ConnectSessionPayload | null, ConnectSessionResponse>(
         `/whatsapp-sessions/${sessionId}/connect`,
-        payload
+        payload,
+        true
     );
   }
 
@@ -644,7 +657,7 @@ export class Wasender {
    */
   public async getWhatsAppSessionQRCode(sessionId: number): Promise<GetQRCodeResult> {
     if (!sessionId) throw new WasenderAPIError("Session ID is required.", 400);
-    return this.getInternal<GetQRCodeResponse>(`/whatsapp-sessions/${sessionId}/qrcode`);
+    return this.getInternal<GetQRCodeResponse>(`/whatsapp-sessions/${sessionId}/qrcode`, true);
   }
 
   /**
@@ -655,7 +668,7 @@ export class Wasender {
    */
   public async disconnectWhatsAppSession(sessionId: number): Promise<DisconnectSessionResult> {
     if (!sessionId) throw new WasenderAPIError("Session ID is required.", 400);
-    return this.postInternal<null, DisconnectSessionResponse>(`/whatsapp-sessions/${sessionId}/disconnect`, null);
+    return this.postInternal<null, DisconnectSessionResponse>(`/whatsapp-sessions/${sessionId}/disconnect`, null, true);
   }
 
   /**
@@ -667,10 +680,7 @@ export class Wasender {
    */
   public async regenerateApiKey(sessionId: number): Promise<RegenerateApiKeyResult> {
     if (!sessionId) throw new WasenderAPIError("Session ID is required.", 400);
-    // This request method will need special handling for the response type if it deviates significantly
-    // from WasenderSuccessResponse, especially in error scenarios if they also don\'t fit WasenderErrorResponse.
-    // For now, assuming success fits RegenerateApiKeyResponse and errors fit WasenderAPIError.
-    return this.request<RegenerateApiKeyResponse>("POST", `/whatsapp-sessions/${sessionId}/regenerate-key`, {});
+    return this.request<RegenerateApiKeyResponse>("POST", `/whatsapp-sessions/${sessionId}/regenerate-key`, {}, true);
   }
 
   /**
@@ -680,13 +690,7 @@ export class Wasender {
    * @throws WasenderAPIError if the request fails.
    */
   public async getSessionStatus(): Promise<GetSessionStatusResult> {
-    // This is a special case. The response isn\'t wrapped in `data` and `success` fields.
-    // The generic `request` method will need to be aware of this, or we use fetchImpl directly.
-    // For now, we will assume `request` can handle it based on path or a new parameter.
-    // The `GetSessionStatusResponse` is `{ status: "..." }`.
-    // If rate limits are returned, `GetSessionStatusResult` includes `RateLimitInfo`.
-    const result = await this.request<GetSessionStatusResponse>("GET", "/status");
-    return result as GetSessionStatusResult; // Casting, assuming rateLimitInfo is part of the raw result from request
+    return this.request<GetSessionStatusResponse>("GET", "/status", undefined, false);
   }
 
   // ---------- Webhook Handling ----------
@@ -731,5 +735,6 @@ export const createWasender = (
     baseUrl?: string, 
     fetchImplementation?: FetchImplementation,
     retryOptions?: RetryConfig,
-    webhookSecret?: string 
-): Wasender => new Wasender(apiKey, baseUrl, fetchImplementation, retryOptions, webhookSecret);
+    webhookSecret?: string,
+    personaAccessToken?: string
+): Wasender => new Wasender(apiKey, baseUrl, fetchImplementation, retryOptions, webhookSecret, personaAccessToken);

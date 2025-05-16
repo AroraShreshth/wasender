@@ -30,6 +30,9 @@ import {
   GetSessionStatusResult,
 } from '../src/sessions';
 import { RateLimitInfo, WasenderSuccessResponse } from '../src/messages';
+import { createWasender } from '../src/main';
+import { WasenderAPIError } from '../src/errors';
+import '@jest/globals';
 
 describe('Sessions tests', () => {
   it('should have tests', () => {
@@ -373,5 +376,102 @@ describe('Session Type Definitions', () => {
       expect(result.response.status).toBe<WhatsAppSessionStatus>('LOGGED_OUT');
       expect(result.rateLimit.remaining).toBe(99);
     });
+  });
+});
+
+describe('Session endpoints persona token tests', () => {
+  const apiKey = process.env.WASENDER_API_KEY;
+  const personaToken = process.env.WASENDER_PERSONA_ACCESS_TOKEN;
+
+  if (!apiKey) {
+    throw new Error('WASENDER_API_KEY environment variable is required for tests');
+  }
+
+  const wasender = createWasender(apiKey, undefined, undefined, undefined, undefined, personaToken);
+
+  // Test account-scoped endpoints (should use persona token)
+  test('getAllWhatsAppSessions should use persona token as Bearer token', async () => {
+    const mockFetch = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      headers: new Headers(),
+      json: () => Promise.resolve({ success: true, data: [] })
+    });
+
+    const testWasender = createWasender(apiKey, undefined, mockFetch, undefined, undefined, personaToken);
+    await testWasender.getAllWhatsAppSessions();
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          'Authorization': `Bearer ${personaToken}`
+        })
+      })
+    );
+  });
+
+  // Test session-scoped endpoint (should use API key as Bearer token)
+  test('getSessionStatus should use API key as Bearer token', async () => {
+    const mockFetch = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      headers: new Headers(),
+      json: () => Promise.resolve({ status: 'CONNECTED' })
+    });
+
+    const testWasender = createWasender(apiKey, undefined, mockFetch, undefined, undefined, personaToken);
+    await testWasender.getSessionStatus();
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          'Authorization': `Bearer ${apiKey}`
+        })
+      })
+    );
+  });
+
+  // Test error handling when persona token is missing for account-scoped endpoint
+  test('should throw error when persona token is missing for account-scoped endpoint', async () => {
+    const testWasender = createWasender(apiKey);
+    
+    await expect(testWasender.getAllWhatsAppSessions()).rejects.toThrow(WasenderAPIError);
+  });
+
+  // Test successful session creation with persona token
+  test('createWhatsAppSession should use persona token as Bearer token', async () => {
+    const mockFetch = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      headers: new Headers(),
+      json: () => Promise.resolve({
+        success: true,
+        data: {
+          id: 1,
+          name: 'Test Session',
+          status: 'DISCONNECTED'
+        }
+      })
+    });
+
+    const testWasender = createWasender(apiKey, undefined, mockFetch, undefined, undefined, personaToken);
+    const result = await testWasender.createWhatsAppSession({
+      name: 'Test Session',
+      phone_number: '+1234567890',
+      account_protection: true,
+      log_messages: true
+    });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          'Authorization': `Bearer ${personaToken}`
+        })
+      })
+    );
+    expect(result.response.success).toBe(true);
   });
 });

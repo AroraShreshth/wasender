@@ -36,13 +36,14 @@ import {
 } from "path-to-your-sdk/sessions"; // Adjust path
 
 const apiKey = process.env.WASENDER_API_KEY;
+const personaAccessToken = process.env.WASENDER_PERSONA_ACCESS_TOKEN;
 
 if (!apiKey) {
   console.error("Error: WASENDER_API_KEY environment variable is not set.");
   process.exit(1);
 }
 
-const wasender = createWasender(apiKey);
+const wasender = createWasender(apiKey, undefined, undefined, undefined, undefined, personaAccessToken);
 console.log("Wasender SDK Initialized for Session Management examples.");
 
 // Placeholder for a session ID - replace with an actual ID from your tests
