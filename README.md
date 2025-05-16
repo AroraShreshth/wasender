@@ -51,8 +51,10 @@ import { createWasender, RetryConfig, FetchImplementation } from "wasenderapi";
 // import fetch from 'cross-fetch';
 // const customFetch: FetchImplementation = fetch as FetchImplementation;
 
+// Required credentials
 const apiKey = process.env.WASENDER_API_KEY!;
-const webhookSecret = process.env.WASENDER_WEBHOOK_SECRET; // Required for wasender.handleWebhookEvent()
+const personaToken = process.env.WASENDER_PERSONA_ACCESS_TOKEN; // Required for account-scoped endpoints
+const webhookSecret = process.env.WASENDER_WEBHOOK_SECRET; // Required for webhook handling
 
 // Optional: Configure retry behavior for rate limit errors
 const retryOptions: RetryConfig = {
@@ -60,18 +62,37 @@ const retryOptions: RetryConfig = {
   maxRetries: 3, // Attempt up to 3 retries on HTTP 429 errors
 };
 
+// Initialize with all options
 const wasender = createWasender(
+  apiKey,                    // Required: Your API key
+  undefined,                 // Optional: baseUrl, defaults to "https://www.wasenderapi.com/api"
+  undefined,                 // Optional: customFetch implementation
+  retryOptions,             // Optional: retry configuration
+  webhookSecret,            // Optional: webhook secret for webhook handling
+  personaToken              // Optional: persona token for account-scoped endpoints
+);
+
+// Basic initialization (session-scoped endpoints only)
+const basicWasender = createWasender(apiKey);
+
+// Initialize with persona token (for account management)
+const accountWasender = createWasender(
   apiKey,
-  undefined, // Optional: baseUrl, defaults to "https://www.wasenderapi.com/api"
-  undefined, // Optional: customFetch implementation (e.g., for Node.js < 18)
-  retryOptions,
-  webhookSecret // Provide if you plan to use wasender.handleWebhookEvent()
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  personaToken
 );
 
 console.log("Wasender SDK Initialized.");
 ```
 
-**Important:** Always store your `WASENDER_API_KEY` and `WASENDER_WEBHOOK_SECRET` securely (e.g., as environment variables).
+**Important:** 
+- Store your credentials securely (e.g., as environment variables)
+- `WASENDER_API_KEY` is required for all endpoints
+- `WASENDER_PERSONA_ACCESS_TOKEN` is required for account-scoped endpoints
+- `WASENDER_WEBHOOK_SECRET` is required if you plan to use webhook handling
 
 ## Authentication
 
