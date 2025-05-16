@@ -73,6 +73,20 @@ console.log("Wasender SDK Initialized.");
 
 **Important:** Always store your `WASENDER_API_KEY` and `WASENDER_WEBHOOK_SECRET` securely (e.g., as environment variables).
 
+## Authentication
+
+The SDK supports two types of authentication:
+
+1. **API Key Authentication** (Required for all endpoints)
+   - Used for session-scoped endpoints
+   - Set via environment variable: `WASENDER_API_KEY`
+   - Or pass directly to the constructor
+
+2. **Persona Access Token** (Required for account-scoped endpoints)
+   - Used for account management endpoints
+   - Set via environment variable: `WASENDER_PERSONA_ACCESS_TOKEN`
+   - Or pass directly to the constructor
+
 ## Core Concepts
 
 ### Message Payloads
