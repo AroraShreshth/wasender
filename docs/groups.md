@@ -20,7 +20,7 @@ import {
   createWasender,
   Wasender,
   WasenderMessagePayload, // For sending messages
-} from "path-to-your-sdk/main";
+} from "wasenderapi";
 import { WasenderAPIError } from "path-to-your-sdk/errors";
 import {
   TextOnlyMessage, // Example message type
@@ -41,7 +41,7 @@ if (!apiKey) {
   process.exit(1);
 }
 
-const wasender = createWasender(apiKey);
+const wasenderapi = createWasender(apiKey);
 console.log("Wasender SDK Initialized for Group Management examples.");
 
 // Placeholders - replace with actual JIDs for testing
@@ -90,7 +90,7 @@ Retrieves a list of all WhatsApp groups the connected account is part of.
 async function fetchAllGroups() {
   console.log("\n--- Fetching All Groups ---");
   try {
-    const result: GetAllGroupsResult = await wasender.getGroups();
+    const result: GetAllGroupsResult = await wasenderapi.getGroups();
     console.log(
       "Groups retrieved:",
       result.response.data.length,
@@ -112,7 +112,7 @@ fetchAllGroups();
 
 ### 2. Send Message to a Group
 
-Use the standard `wasender.send()` method. The `to` field in the message payload should be the Group JID.
+Use the standard `wasenderapi.send()` method. The `to` field in the message payload should be the Group JID.
 
 ```typescript
 // examples/send-group-message.ts
@@ -127,7 +127,7 @@ async function sendSampleGroupMessage(groupJid: string) {
   };
 
   try {
-    const result = await wasender.send(textPayload);
+    const result = await wasenderapi.send(textPayload);
     console.log("Group message sent successfully:", result.response.message);
     // Log rate limit info
   } catch (error) {
@@ -148,7 +148,7 @@ async function fetchGroupMetadata(groupJid: string) {
   if (!groupJid) return console.error("Group JID is required.");
 
   try {
-    const result: GetGroupMetadataResult = await wasender.getGroupMetadata(
+    const result: GetGroupMetadataResult = await wasenderapi.getGroupMetadata(
       groupJid
     );
     console.log(
@@ -175,7 +175,7 @@ async function fetchGroupParticipants(groupJid: string) {
 
   try {
     const result: GetGroupParticipantsResult =
-      await wasender.getGroupParticipants(groupJid);
+      await wasenderapi.getGroupParticipants(groupJid);
     console.log(
       "Group participants retrieved:",
       result.response.data.length,
@@ -211,7 +211,7 @@ async function addParticipantsToGroup(
   }
   try {
     const result: ModifyGroupParticipantsResult =
-      await wasender.addGroupParticipants(groupJid, participantsToAdd);
+      await wasenderapi.addGroupParticipants(groupJid, participantsToAdd);
     console.log(
       "Add participants result:",
       JSON.stringify(result.response.data, null, 2)
@@ -240,7 +240,7 @@ async function removeParticipantsFromGroup(
   }
   try {
     const result: ModifyGroupParticipantsResult =
-      await wasender.removeGroupParticipants(groupJid, participantsToRemove);
+      await wasenderapi.removeGroupParticipants(groupJid, participantsToRemove);
     console.log(
       "Remove participants result:",
       JSON.stringify(result.response.data, null, 2)
@@ -272,7 +272,7 @@ async function updateSampleGroupSettings(groupJid: string) {
 
   try {
     const result: UpdateGroupSettingsResult =
-      await wasender.updateGroupSettings(groupJid, settingsToUpdate);
+      await wasenderapi.updateGroupSettings(groupJid, settingsToUpdate);
     console.log(
       "Update group settings result:",
       JSON.stringify(result.response.data, null, 2)

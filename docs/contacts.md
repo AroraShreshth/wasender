@@ -16,7 +16,7 @@ All examples assume you have initialized the SDK as follows. You can place this 
 
 ```typescript
 // contact-examples-setup.ts
-import { createWasender, Wasender } from "path-to-your-sdk/main"; // Adjust path to your SDK files
+import { createWasender, Wasender } from "wasenderapi"; // Adjust path to your SDK files
 import { WasenderAPIError } from "path-to-your-sdk/errors"; // Adjust path
 // Import contact-specific result types if you need to strongly type the results
 import {
@@ -33,7 +33,7 @@ if (!apiKey) {
   process.exit(1);
 }
 
-const wasender = createWasender(apiKey);
+const wasenderapi = createWasender(apiKey);
 console.log("Wasender SDK Initialized for Contact Management examples.");
 
 // Placeholder for a contact\'s phone number - replace with a valid E.164 number
@@ -67,7 +67,7 @@ function handleApiError(error: unknown, operation: string) {
 }
 ```
 
-**Note:** Replace `"path-to-your-sdk/main"`, `"path-to-your-sdk/errors"`, and `"path-to-your-sdk/contacts"` with the actual paths to your SDK files. Ensure the `WASENDER_API_KEY` environment variable is set.
+**Note:** Replace `"wasenderapi"`, `"path-to-your-sdk/errors"`, and `"path-to-your-sdk/contacts"` with the actual paths to your SDK files. Ensure the `WASENDER_API_KEY` environment variable is set.
 
 ## Contact Management Operations
 
@@ -82,7 +82,7 @@ Retrieves a list of all contacts synced with the WhatsApp session.
 async function fetchAllContacts() {
   console.log("\n--- Fetching All Contacts ---");
   try {
-    const result: GetAllContactsResult = await wasender.getContacts();
+    const result: GetAllContactsResult = await wasenderapi.getContacts();
     console.log(
       "Contacts retrieved successfully:",
       result.response.data.length,
@@ -123,7 +123,7 @@ async function fetchContactInfo(contactJid: string) {
     return;
   }
   try {
-    const result: GetContactInfoResult = await wasender.getContactInfo(
+    const result: GetContactInfoResult = await wasenderapi.getContactInfo(
       contactJid
     );
     console.log(
@@ -165,7 +165,7 @@ async function fetchContactProfilePicture(contactJid: string) {
   }
   try {
     const result: GetContactProfilePictureResult =
-      await wasender.getContactProfilePicture(contactJid);
+      await wasenderapi.getContactProfilePicture(contactJid);
     if (result.response.data.imgUrl) {
       console.log("Profile picture URL:", result.response.data.imgUrl);
     } else {
@@ -202,7 +202,7 @@ async function blockSpecificContact(contactJid: string) {
     return;
   }
   try {
-    const result: ContactActionResult = await wasender.blockContact(contactJid);
+    const result: ContactActionResult = await wasenderapi.blockContact(contactJid);
     console.log("Block operation successful:", result.response.data.message);
     console.log(
       "Rate Limit Info: Remaining =",
@@ -233,7 +233,7 @@ async function unblockSpecificContact(contactJid: string) {
     return;
   }
   try {
-    const result: ContactActionResult = await wasender.unblockContact(
+    const result: ContactActionResult = await wasenderapi.unblockContact(
       contactJid
     );
     console.log("Unblock operation successful:", result.response.data.message);

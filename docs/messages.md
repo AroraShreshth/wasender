@@ -16,7 +16,7 @@ All examples assume you have initialized the SDK as follows. You can place this 
 
 ```typescript
 // main-setup.ts
-import { createWasender, Wasender, RetryConfig } from "path-to-your-sdk/main"; // Adjust path to your SDK files
+import { createWasender, Wasender, RetryConfig } from "wasenderapi"; // Adjust path to your SDK files
 import {
   TextOnlyMessage,
   ImageUrlMessage,
@@ -37,7 +37,7 @@ if (!apiKey) {
 }
 
 // For most examples, we initialize without special retry config
-const wasender = createWasender(apiKey);
+const wasenderapi = createWasender(apiKey);
 
 // For examples specifically showing retry logic:
 const retryOptions: RetryConfig = {
@@ -105,11 +105,11 @@ async function sendMessageExample(
 // --- Individual Message Type Examples Follow ---
 ```
 
-**Note:** Replace `"path-to-your-sdk/main"` and `"path-to-your-sdk/messages"` with the actual paths to your SDK files. Also, set the `WASENDER_API_KEY` environment variable.
+**Note:** Replace `"wasenderapi"` and `"path-to-your-sdk/messages"` with the actual paths to your SDK files. Also, set the `WASENDER_API_KEY` environment variable.
 
 ## Sending Different Message Types
 
-The SDK uses a generic `wasender.send()` method that accepts a discriminated union `WasenderMessagePayload`. You define the `messageType` and provide the corresponding properties.
+The SDK uses a generic `wasenderapi.send()` method that accepts a discriminated union `WasenderMessagePayload`. You define the `messageType` and provide the corresponding properties.
 
 ### 1. Text Message
 
@@ -125,7 +125,7 @@ async function sendTextMessage() {
     messageType: "text",
     text: "Hello from the Wasender SDK! This is a plain text message.",
   };
-  await sendMessageExample("Sending Text Message", wasender, textPayload);
+  await sendMessageExample("Sending Text Message", wasenderapi, textPayload);
 }
 
 sendTextMessage();
@@ -172,7 +172,7 @@ async function sendVideoMessage() {
     videoUrl: "https://www.example.com/video.mp4", // Replace with a valid public video URL (MP4, 3GPP, max 16MB)
     text: "Watch this exciting video!", // Optional caption
   };
-  await sendMessageExample("Sending Video Message", wasender, videoPayload);
+  await sendMessageExample("Sending Video Message", wasenderapi, videoPayload);
 }
 
 sendVideoMessage();
@@ -195,7 +195,7 @@ async function sendDocumentMessage() {
   };
   await sendMessageExample(
     "Sending Document Message",
-    wasender,
+    wasenderapi,
     documentPayload
   );
 }
@@ -220,7 +220,7 @@ async function sendAudioMessage() {
   };
   await sendMessageExample(
     "Sending Audio Message (Voice Note)",
-    wasender,
+    wasenderapi,
     audioPayload
   );
 }
@@ -243,7 +243,7 @@ async function sendStickerMessage() {
     stickerUrl: "https://www.example.com/sticker.webp", // Replace with a valid public sticker URL (.webp, max 100KB)
     // `text` is not applicable for stickers
   };
-  await sendMessageExample("Sending Sticker Message", wasender, stickerPayload);
+  await sendMessageExample("Sending Sticker Message", wasenderapi, stickerPayload);
 }
 
 sendStickerMessage();
@@ -300,7 +300,7 @@ async function sendLocationPinMessage() {
   };
   await sendMessageExample(
     "Sending Location Pin Message",
-    wasender,
+    wasenderapi,
     locationPayload
   );
 }
@@ -310,20 +310,20 @@ sendLocationPinMessage();
 
 ## Using Specific Helper Methods
 
-The SDK also provides specific helper methods for each message type (e.g., `wasender.sendText()`, `wasender.sendImage()`). These are wrappers around the generic `send()` method and automatically set the `messageType`. When using these helpers, you omit `messageType` from the payload.
+The SDK also provides specific helper methods for each message type (e.g., `wasenderapi.sendText()`, `wasenderapi.sendImage()`). These are wrappers around the generic `send()` method and automatically set the `messageType`. When using these helpers, you omit `messageType` from the payload.
 
 ### Example: Sending Text using `sendText()`
 
 ```typescript
 // examples/send-text-helper.ts
-// (Assume main-setup.ts is imported or its content is available, specifically `wasender` instance)
+// (Assume main-setup.ts is imported or its content is available, specifically `wasenderapi` instance)
 // Note: For specific helpers, payload types are Omit<MessageType, 'messageType'>
 
 async function sendTextViaHelper() {
   console.log("\n--- Sending Text Message via sendText() Helper ---");
   try {
     // Notice `messageType` is not needed in the payload for helper methods
-    const result = await wasender.sendText({
+    const result = await wasenderapi.sendText({
       to: recipientPhoneNumber,
       text: "Hello from the sendText() helper method!",
     });
@@ -354,13 +354,13 @@ sendTextViaHelper();
 
 You can use similar helper methods for all other message types:
 
-- `wasender.sendImage(payload: Omit<ImageUrlMessage, 'messageType'>)`
-- `wasender.sendVideo(payload: Omit<VideoUrlMessage, 'messageType'>)`
-- `wasender.sendDocument(payload: Omit<DocumentUrlMessage, 'messageType'>)`
-- `wasender.sendAudio(payload: Omit<AudioUrlMessage, 'messageType'>)`
-- `wasender.sendSticker(payload: Omit<StickerUrlMessage, 'messageType'>)`
-- `wasender.sendContact(payload: Omit<ContactCardMessage, 'messageType'>)`
-- `wasender.sendLocation(payload: Omit<LocationPinMessage, 'messageType'>)`
+- `wasenderapi.sendImage(payload: Omit<ImageUrlMessage, 'messageType'>)`
+- `wasenderapi.sendVideo(payload: Omit<VideoUrlMessage, 'messageType'>)`
+- `wasenderapi.sendDocument(payload: Omit<DocumentUrlMessage, 'messageType'>)`
+- `wasenderapi.sendAudio(payload: Omit<AudioUrlMessage, 'messageType'>)`
+- `wasenderapi.sendSticker(payload: Omit<StickerUrlMessage, 'messageType'>)`
+- `wasenderapi.sendContact(payload: Omit<ContactCardMessage, 'messageType'>)`
+- `wasenderapi.sendLocation(payload: Omit<LocationPinMessage, 'messageType'>)`
 
 ## Error Handling and Rate Limiting
 

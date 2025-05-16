@@ -18,5 +18,5 @@ export type ChannelTextMessage = TextOnlyMessage;
 export type SendChannelMessageResult = WasenderSendResult;
 
 // No new API interaction logic is defined here as sending to channels
-// uses the existing /api/send-message endpoint, which is handled by wasender.send() in main.ts.
+// uses the existing /api/send-message endpoint, which is handled by wasenderapi.send() in main.ts.
 // This file primarily provides type clarity for channel-specific messaging.

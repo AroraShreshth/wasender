@@ -6,7 +6,7 @@ This document explains how to send messages to WhatsApp Channels (within Communi
 
 ## Overview
 
-Sending a message to a WhatsApp Channel utilizes the existing generic `wasender.send()` method. The key differences compared to sending a message to a regular user or group are:
+Sending a message to a WhatsApp Channel utilizes the existing generic `wasenderapi.send()` method. The key differences compared to sending a message to a regular user or group are:
 
 1.  **Recipient (`to` field):** The `to` field in the message payload must be the unique **Channel ID** (also known as Channel JID). This typically looks like `12345678901234567890@newsletter`.
 2.  **Message Type Restriction:** Currently, the Wasender API **only supports sending text messages** to channels. Other message types (images, videos, documents, etc.) are not supported for channels at this time via this method.
@@ -18,14 +18,14 @@ Sending a message to a WhatsApp Channel utilizes the existing generic `wasender.
 
 ## How to Send a Message to a Channel
 
-You will use the `wasender.send()` method with a `TextOnlyMessage` payload (or the more specific `ChannelTextMessage` type alias from `src/wasender/channel.ts`).
+You will use the `wasenderapi.send()` method with a `TextOnlyMessage` payload (or the more specific `ChannelTextMessage` type alias from `src/wasenderapi/channel.ts`).
 
 ### Type Definition for Channel Messages
 
-For clarity, the SDK provides a type alias in `src/wasender/channel.ts`:
+For clarity, the SDK provides a type alias in `src/wasenderapi/channel.ts`:
 
 ```typescript
-// src/wasender/channel.ts
+// src/wasenderapi/channel.ts
 import { TextOnlyMessage } from "./messages";
 
 export type ChannelTextMessage = TextOnlyMessage;
@@ -39,7 +39,7 @@ Here's how you can send a text message to a WhatsApp Channel:
 
 ```typescript
 // examples/send-channel-message.ts
-import { createWasender, Wasender } from "path-to-your-sdk/main"; // Adjust path
+import { createWasender, Wasender } from "wasenderapi"; // Adjust path
 import { WasenderAPIError } from "path-to-your-sdk/errors"; // Adjust path
 import { ChannelTextMessage } from "path-to-your-sdk/channel"; // Adjust path
 import { WasenderSendResult } from "path-to-your-sdk/messages"; // Adjust path
@@ -51,7 +51,7 @@ if (!apiKey) {
   process.exit(1);
 }
 
-const wasender = createWasender(apiKey);
+const wasenderapi = createWasender(apiKey);
 
 // Replace with the actual Channel ID you want to send a message to
 const targetChannelJid = "12345678901234567890@newsletter";
@@ -74,7 +74,7 @@ async function sendMesageToChannel(channelJid: string, messageText: string) {
   };
 
   try {
-    const result: WasenderSendResult = await wasender.send(
+    const result: WasenderSendResult = await wasenderapi.send(
       channelMessagePayload
     );
     console.log(
