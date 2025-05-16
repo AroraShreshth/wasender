@@ -380,14 +380,10 @@ describe('Session Type Definitions', () => {
 });
 
 describe('Session endpoints persona token tests', () => {
-  const apiKey = process.env.WASENDER_API_KEY;
-  const personaToken = process.env.WASENDER_PERSONA_ACCESS_TOKEN;
+  const apiKey = "apiKey123";
+  const personaToken = "personaToken123";
 
-  if (!apiKey) {
-    throw new Error('WASENDER_API_KEY environment variable is required for tests');
-  }
-
-  const wasender = createWasender(apiKey, undefined, undefined, undefined, undefined, personaToken);
+  const wasenderapi = createWasender(apiKey, undefined, undefined, undefined, undefined, personaToken);
 
   // Test account-scoped endpoints (should use persona token)
   test('getAllWhatsAppSessions should use persona token as Bearer token', async () => {

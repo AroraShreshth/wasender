@@ -4,9 +4,9 @@
 
 [![NPM Version](https://img.shields.io/npm/v/wasenderapi?style=flat)](https://www.npmjs.com/package/wasenderapi)
 [![NPM Downloads](https://img.shields.io/npm/dm/wasenderapi?style=flat)](https://www.npmjs.com/package/wasenderapi)
-[![License](https://img.shields.io/npm/l/wasenderapi?style=flat)](https://github.com/AroraShreshth/wasender/blob/main/LICENSE)
+[![License](https://img.shields.io/npm/l/wasenderapi?style=flat)](https://github.com/AroraShreshth/wasenderapi/blob/main/LICENSE)
 [![TypeScript](https://img.shields.io/badge/written%20in-TypeScript-blue?style=flat&logo=typescript)](https://www.typescriptlang.org/)
-[![CI](https://github.com/AroraShreshth/wasender/actions/workflows/ci.yml/badge.svg)](https://github.com/AroraShreshth/wasender/actions/workflows/ci.yml)
+[![CI](https://github.com/AroraShreshth/wasenderapi/actions/workflows/ci.yml/badge.svg)](https://github.com/AroraShreshth/wasenderapi/actions/workflows/ci.yml)
 
 A lightweight and robust TypeScript SDK for interacting with the Wasender API ([https://www.wasenderapi.com](https://www.wasenderapi.com)). This SDK simplifies sending various types of WhatsApp messages, managing contacts and groups, handling session statuses, and processing incoming webhooks.
 
@@ -63,7 +63,7 @@ const retryOptions: RetryConfig = {
 };
 
 // Initialize with all options
-const wasender = createWasender(
+const wasenderapi = createWasender(
   apiKey,                    // Required: Your API key
   undefined,                 // Optional: baseUrl, defaults to "https://www.wasenderapi.com/api"
   undefined,                 // Optional: customFetch implementation
@@ -116,8 +116,8 @@ The SDK uses discriminated unions (`WasenderMessagePayload`) for message sending
 
 ### Generic `send()` vs. Specific Helpers
 
-- **`wasender.send(payload)`:** A versatile method that accepts any valid `WasenderMessagePayload`.
-- **`wasender.sendText(payload)`**, **`wasender.sendImage(payload)`**, etc.: Convenience wrappers that pre-fill the `messageType` for you.
+- **`wasenderapi.send(payload)`:** A versatile method that accepts any valid `WasenderMessagePayload`.
+- **`wasenderapi.sendText(payload)`**, **`wasenderapi.sendImage(payload)`**, etc.: Convenience wrappers that pre-fill the `messageType` for you.
 
 ### Error Handling
 
@@ -129,7 +129,7 @@ Successful responses and `WasenderAPIError` objects include a `rateLimit` proper
 
 ### Webhooks
 
-The `wasender.handleWebhookEvent(requestAdapter)` method verifies the signature of incoming webhook requests (using the `webhookSecret` you provide at initialization) and parses the event payload into a typed `WasenderWebhookEvent` object. You'll need to implement a `WebhookRequestAdapter` based on your HTTP server framework.
+The `wasenderapi.handleWebhookEvent(requestAdapter)` method verifies the signature of incoming webhook requests (using the `webhookSecret` you provide at initialization) and parses the event payload into a typed `WasenderWebhookEvent` object. You'll need to implement a `WebhookRequestAdapter` based on your HTTP server framework.
 
 ## Usage Examples
 
@@ -151,7 +151,7 @@ async function sendSimpleText() {
       to: "+1234567890", // Recipient's JID
       text: "Hello from the Wasender SDK!",
     };
-    const result = await wasender.send(textPayload);
+    const result = await wasenderapi.send(textPayload);
     console.log("Message sent:", result.response.message);
     console.log("Rate limit remaining:", result.rateLimit.remaining);
   } catch (error) {
@@ -170,7 +170,7 @@ Retrieve your contact list, fetch information about specific contacts, get their
 ```typescript
 async function getMyContacts() {
   try {
-    const result = await wasender.getContacts();
+    const result = await wasenderapi.getContacts();
     console.log(`Found ${result.response.data.length} contacts.`);
     if (result.response.data.length > 0) {
       console.log("First contact:", result.response.data[0]);
@@ -191,7 +191,7 @@ List groups your account is part of, get group metadata (like subject and partic
 ```typescript
 async function getMyGroups() {
   try {
-    const result = await wasender.getGroups();
+    const result = await wasenderapi.getGroups();
     console.log(`Found ${result.response.data.length} groups.`);
     if (result.response.data.length > 0) {
       const firstGroup = result.response.data[0];
@@ -203,7 +203,7 @@ async function getMyGroups() {
       );
 
       // Example: Get metadata for the first group
-      const metadata = await wasender.getGroupMetadata(firstGroup.jid);
+      const metadata = await wasenderapi.getGroupMetadata(firstGroup.jid);
       console.log(
         "First group participants count:",
         metadata.response.data.participants?.length
@@ -232,7 +232,7 @@ async function sendToChannel(channelJid: string, text: string) {
       messageType: "text",
       text: text,
     };
-    const result = await wasender.send(payload);
+    const result = await wasenderapi.send(payload);
     console.log("Message sent to channel:", result.response.message);
   } catch (error) {
     console.error("Error sending to channel:", error);
@@ -259,7 +259,7 @@ import {
 async function handleIncomingWebhook(request: YourFrameworkRequest) {
   // Replace YourFrameworkRequest
   if (!webhookSecret) {
-    // Ensure wasender instance was initialized with webhookSecret
+    // Ensure wasenderapi instance was initialized with webhookSecret
     console.error("Webhook secret not configured in SDK.");
     return; // Or send appropriate error response
   }
@@ -275,7 +275,7 @@ async function handleIncomingWebhook(request: YourFrameworkRequest) {
 
   try {
     const webhookEvent: WasenderWebhookEvent =
-      await wasender.handleWebhookEvent(adapter);
+      await wasenderapi.handleWebhookEvent(adapter);
 
     console.log("Received verified webhook event:", webhookEvent.type);
 
@@ -320,7 +320,7 @@ Create, list, update, delete sessions, connect/disconnect, get QR codes, and che
 ```typescript
 async function listMySessions() {
   try {
-    const result = await wasender.getSessions(); // Method is listed in features.
+    const result = await wasenderapi.getSessions(); // Method is listed in features.
     console.log(`Found ${result.response.data.length} sessions.`);
     if (result.response.data.length > 0) {
       console.log("First session ID:", result.response.data[0].sessionId);
@@ -349,7 +349,7 @@ const customFetchImplementation = async (
   return fetch(url, options);
 };
 
-const wasender = createWasender(apiKey, undefined, customFetchImplementation);
+const wasenderapi = createWasender(apiKey, undefined, customFetchImplementation);
 ```
 
 ### Retry Configuration

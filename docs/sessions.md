@@ -16,7 +16,7 @@ All examples assume SDK initialization as shown below. Adjust paths to your SDK 
 
 ```typescript
 // session-examples-setup.ts
-import { createWasender, Wasender } from "path-to-your-sdk/main"; // Adjust path
+import { createWasender, Wasender } from "wasenderapi"; // Adjust path
 import { WasenderAPIError } from "path-to-your-sdk/errors"; // Adjust path
 import {
   // WhatsAppSession, // Individual session type, if needed directly
@@ -43,7 +43,7 @@ if (!apiKey) {
   process.exit(1);
 }
 
-const wasender = createWasender(apiKey, undefined, undefined, undefined, undefined, personaAccessToken);
+const wasenderapi = createWasender(apiKey, undefined, undefined, undefined, undefined, personaAccessToken);
 console.log("Wasender SDK Initialized for Session Management examples.");
 
 // Placeholder for a session ID - replace with an actual ID from your tests
@@ -110,7 +110,7 @@ async function fetchAllSessions() {
   console.log("\n--- Fetching All WhatsApp Sessions ---");
   try {
     const result: GetAllWhatsAppSessionsResult =
-      await wasender.getAllWhatsAppSessions();
+      await wasenderapi.getAllWhatsAppSessions();
     console.log(
       "Sessions retrieved:",
       result.response.data.length,
@@ -150,7 +150,7 @@ async function createNewSession() {
   };
   try {
     const result: CreateWhatsAppSessionResult =
-      await wasender.createWhatsAppSession(payload);
+      await wasenderapi.createWhatsAppSession(payload);
     console.log(
       "Session created successfully:",
       JSON.stringify(result.response.data, null, 2)
@@ -173,7 +173,7 @@ async function fetchSessionDetails(sessionId: number) {
   console.log(`\n--- Fetching Details for Session ID: ${sessionId} ---`);
   try {
     const result: GetWhatsAppSessionDetailsResult =
-      await wasender.getWhatsAppSessionDetails(sessionId);
+      await wasenderapi.getWhatsAppSessionDetails(sessionId);
     console.log(
       "Session details:",
       JSON.stringify(result.response.data, null, 2)
@@ -200,7 +200,7 @@ async function updateExistingSession(sessionId: number) {
   };
   try {
     const result: UpdateWhatsAppSessionResult =
-      await wasender.updateWhatsAppSession(sessionId, payload);
+      await wasenderapi.updateWhatsAppSession(sessionId, payload);
     console.log(
       "Session updated successfully:",
       JSON.stringify(result.response.data, null, 2)
@@ -222,7 +222,7 @@ async function connectSession(sessionId: number) {
   console.log(`\n--- Connecting Session ID: ${sessionId} ---`);
   try {
     // Setting qr_as_image to true is often useful
-    const result: ConnectSessionResult = await wasender.connectWhatsAppSession(
+    const result: ConnectSessionResult = await wasenderapi.connectWhatsAppSession(
       sessionId,
       true
     );
@@ -261,7 +261,7 @@ Explicitly retrieves the QR code if the session is in a state requiring one (e.g
 async function fetchSessionQrCode(sessionId: number) {
   console.log(`\n--- Fetching QR Code for Session ID: ${sessionId} ---`);
   try {
-    const result: GetQRCodeResult = await wasender.getWhatsAppSessionQRCode(
+    const result: GetQRCodeResult = await wasenderapi.getWhatsAppSessionQRCode(
       sessionId
     );
     console.log("QR code data:", JSON.stringify(result.response.data, null, 2));
@@ -287,7 +287,7 @@ Retrieves the current status of the session linked to the API key used for SDK i
 async function checkSessionStatus() {
   console.log("\n--- Checking Current Session Status (for API Key) ---");
   try {
-    const result: GetSessionStatusResult = await wasender.getSessionStatus();
+    const result: GetSessionStatusResult = await wasenderapi.getSessionStatus();
     console.log("Current session status:", result.response.status);
     // Further explanation of statuses below.
   } catch (error) {
@@ -315,7 +315,7 @@ async function disconnectSpecificSession(sessionId: number) {
   console.log(`\n--- Disconnecting Session ID: ${sessionId} ---`);
   try {
     const result: DisconnectSessionResult =
-      await wasender.disconnectWhatsAppSession(sessionId);
+      await wasenderapi.disconnectWhatsAppSession(sessionId);
     console.log(
       "Disconnect session response:",
       JSON.stringify(result.response.data, null, 2)
@@ -339,7 +339,7 @@ async function regenerateKeyForSession(sessionId: number) {
     "CAUTION: Regenerating the API key will invalidate the current key for THIS SESSION if it's the one tied to your WASENDER_API_KEY env var for this script run!"
   );
   try {
-    const result: RegenerateApiKeyResult = await wasender.regenerateApiKey(
+    const result: RegenerateApiKeyResult = await wasenderapi.regenerateApiKey(
       sessionId
     );
     console.log(
@@ -370,7 +370,7 @@ async function deleteSpecificSession(sessionId: number) {
   console.warn("CAUTION: Deleting a session is irreversible!");
   try {
     const result: DeleteWhatsAppSessionResult =
-      await wasender.deleteWhatsAppSession(sessionId);
+      await wasenderapi.deleteWhatsAppSession(sessionId);
     console.log(
       "Session deleted successfully. Response data (should be null):",
       result.response.data

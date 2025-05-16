@@ -14,7 +14,7 @@ This document provides examples of how to use the Wasender TypeScript SDK to sen
 
 ### Setup
 
-Assuming your SDK files (`main.ts`, `messages.ts`, `errors.ts`, `webhook.ts`) are in a `src/wasender/` directory relative to your project root.
+Assuming your SDK files (`main.ts`, `messages.ts`, `errors.ts`, `webhook.ts`) are in a `src/wasenderapi/` directory relative to your project root.
 
 ### Key Features & Concepts
 
@@ -24,7 +24,7 @@ Assuming your SDK files (`main.ts`, `messages.ts`, `errors.ts`, `webhook.ts`) ar
 - **Rate Limit Information:** Accessible on success and error objects.
 - **Injectable Fetch:** Provide your own `fetch` implementation.
 - **Optional Retries:** Automatic retries on HTTP 429 errors.
-- **Webhook Event Handling:** Integrated signature verification and event parsing via `wasender.handleWebhookEvent()`.
+- **Webhook Event Handling:** Integrated signature verification and event parsing via `wasenderapi.handleWebhookEvent()`.
 
 ### Initializing the SDK
 
@@ -34,7 +34,7 @@ import {
   createWasender,
   FetchImplementation,
   RetryConfig,
-} from "../src/wasender/main"; // Adjust path
+} from "../src/wasenderapi/main"; // Adjust path
 
 // Optional: For Node.js < 18, you might need a fetch polyfill
 // import fetch from 'cross-fetch';
@@ -48,41 +48,41 @@ const retryOptions: RetryConfig = {
   maxRetries: 2,
 };
 
-const wasender = createWasender(
+const wasenderapi = createWasender(
   apiKey,
   undefined, // Default baseUrl "https://www.wasenderapi.com/api"
   undefined, // Default globalThis.fetch (or provide `customFetch`)
   retryOptions,
-  webhookSecret // Provide if you plan to use wasender.handleWebhookEvent()
+  webhookSecret // Provide if you plan to use wasenderapi.handleWebhookEvent()
 );
 
 console.log("Wasender SDK Initialized.");
-// Now you can use `wasender.send(...)` or `wasender.handleWebhookEvent(...)`
+// Now you can use `wasenderapi.send(...)` or `wasenderapi.handleWebhookEvent(...)`
 ```
 
 ### Sending Messages (Basic Usage)
 
-(Example from previous documentation, focuses on `send` and error handling for sending messages - remains largely the same but ensure `wasender` instance is initialized as above)
+(Example from previous documentation, focuses on `send` and error handling for sending messages - remains largely the same but ensure `wasenderapi` instance is initialized as above)
 
 ```typescript
 // examples/send-messages.ts
 // ... (imports for createWasender, errors, message types) ...
-// ... (apiKey and wasender instance initialization, potentially without webhookSecret if only sending) ...
+// ... (apiKey and wasenderapi instance initialization, potentially without webhookSecret if only sending) ...
 
 import {
   createWasender,
   WasenderAPIError,
   RetryConfig,
-} from "../src/wasender/main"; // Adjust path
+} from "../src/wasenderapi/main"; // Adjust path
 import {
   TextOnlyMessage,
   ImageUrlMessage,
   DocumentUrlMessage,
-} from "../src/wasender/messages"; // Adjust path
+} from "../src/wasenderapi/messages"; // Adjust path
 
 async function sendDemoMessages() {
   const apiKey = process.env.WASENDER_API_KEY!;
-  const wasender = createWasender(apiKey, undefined, undefined, {
+  const wasenderapi = createWasender(apiKey, undefined, undefined, {
     enabled: true,
     maxRetries: 1,
   });
@@ -94,7 +94,7 @@ async function sendDemoMessages() {
       to: "+1234567890",
       text: "Hello from SDK v0.1.0!",
     };
-    let result = await wasender.send(textPayload);
+    let result = await wasenderapi.send(textPayload);
     console.log("Text Sent:", result.response.message);
     console.log(
       "Rate Limit:",
@@ -122,7 +122,7 @@ sendDemoMessages();
 
 ### Handling Incoming Webhooks
 
-To process webhooks, initialize the `Wasender` SDK with your `webhookSecret`. Then, use the `wasender.handleWebhookEvent(requestAdapter)` method. You'll need to create a `WebhookRequestAdapter` based on your server framework.
+To process webhooks, initialize the `Wasender` SDK with your `webhookSecret`. Then, use the `wasenderapi.handleWebhookEvent(requestAdapter)` method. You'll need to create a `WebhookRequestAdapter` based on your server framework.
 
 **`WebhookRequestAdapter` Interface:**
 

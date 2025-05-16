@@ -12,7 +12,7 @@ This document explains how to receive and process webhook events from Wasender u
 To handle webhooks, you must provide your `webhookSecret` when initializing the Wasender SDK client.
 
 ```typescript
-import { createWasender } from "wasender"; // Adjust path if necessary
+import { createWasender } from "wasenderapi"; // Adjust path if necessary
 
 const apiKey = process.env.WASENDER_API_KEY!;
 const webhookSecret = process.env.WASENDER_WEBHOOK_SECRET!;
@@ -21,7 +21,7 @@ if (!webhookSecret) {
   throw new Error("WASENDER_WEBHOOK_SECRET is essential for webhook handling.");
 }
 
-const wasender = createWasender(
+const wasenderapi = createWasender(
   apiKey,
   undefined, // Optional: baseUrl
   undefined, // Optional: customFetch
@@ -29,7 +29,7 @@ const wasender = createWasender(
   webhookSecret // Crucial: Your webhook secret
 );
 
-// Now the \'wasender\' instance is ready to handle webhook events.
+// Now the \'wasenderapi\' instance is ready to handle webhook events.
 ```
 
 ## Processing Incoming Webhooks
@@ -81,7 +81,7 @@ async function handleIncomingWebhook(
 
   try {
     const webhookEvent: WasenderWebhookEvent =
-      await wasender.handleWebhookEvent(adapter);
+      await wasenderapi.handleWebhookEvent(adapter);
 
     console.log("Received verified webhook event type:", webhookEvent.type);
 
@@ -155,7 +155,7 @@ export type WasenderWebhookEvent =
   | ChatsUpsertEvent
   | ChatsUpdateEvent
   | ChatsDeleteEvent;
-// ... and all other event types defined in \'src/wasender/webhook.ts\'
+// ... and all other event types defined in \'src/wasenderapi/webhook.ts\'
 ```
 
 ### Event Types (`WasenderWebhookEventType`)
@@ -176,7 +176,7 @@ The `type` property is an enum `WasenderWebhookEventType` that indicates the kin
   - `SessionStatus`: Changes in your session status (e.g., connected, disconnected, QR code needed).
   - `QrCodeUpdated`: A new QR code is available for scanning.
 
-Each event type has a corresponding `data` payload with a specific structure. Refer to the type definitions in `src/wasender/webhook.ts` for details on each payload.
+Each event type has a corresponding `data` payload with a specific structure. Refer to the type definitions in `src/wasenderapi/webhook.ts` for details on each payload.
 
 ## Detailed Examples
 
@@ -190,7 +190,7 @@ Make sure to use a middleware that provides the raw body (e.g., `express.raw({ t
 // examples/webhook-express.ts
 import express from "express";
 // Assuming Wasender SDK (createWasender, WebhookRequestAdapter, WasenderWebhookEvent, WasenderWebhookEventType) is available
-// import { createWasender, WebhookRequestAdapter, WasenderWebhookEvent, WasenderWebhookEventType, WasenderAPIError } from "../src/wasender/main";
+// import { createWasender, WebhookRequestAdapter, WasenderWebhookEvent, WasenderWebhookEventType, WasenderAPIError } from "../src/wasenderapi/main";
 // For this example, let's mock them if not running full SDK context
 const {
   createWasender,
@@ -213,7 +213,7 @@ if (!webhookSecret) {
   // Potentially exit or disable webhook route
 }
 
-const wasender = createWasender(
+const wasenderapi = createWasender(
   apiKey,
   undefined,
   undefined,
@@ -224,9 +224,9 @@ const wasender = createWasender(
 // Middleware to get raw body - place this BEFORE express.json() for this route if needed for verification on raw body by some libraries
 // For this SDK's current string-based signature, express.json() is fine as we re-stringify if needed, but raw is safer.
 // Or, use a specific raw body middleware:
-app.use("/webhook-wasender", express.raw({ type: "application/json" }));
+app.use("/webhook-wasenderapi", express.raw({ type: "application/json" }));
 
-app.post("/webhook-wasender", async (req, res) => {
+app.post("/webhook-wasenderapi", async (req, res) => {
   if (!webhookSecret) {
     return res
       .status(500)
@@ -246,7 +246,7 @@ app.post("/webhook-wasender", async (req, res) => {
 
   try {
     const webhookEvent: typeof WasenderWebhookEvent =
-      await wasender.handleWebhookEvent(adapter);
+      await wasenderapi.handleWebhookEvent(adapter);
     console.log("Received verified webhook event:", webhookEvent.type);
 
     // Process the event (example)
@@ -297,7 +297,7 @@ import {
   WasenderWebhookEvent,
   WasenderWebhookEventType,
   WasenderAPIError,
-} from "./wasender/main"; // Adjust path to your SDK files
+} from "./wasenderapi/main"; // Adjust path to your SDK files
 
 export interface Env {
   WASENDER_API_KEY: string;
@@ -320,7 +320,7 @@ export default {
       return new Response("Webhook secret not configured", { status: 500 });
     }
 
-    const wasender = createWasender(
+    const wasenderapi = createWasender(
       env.WASENDER_API_KEY,
       undefined, // Default baseUrl
       undefined, // Default fetch (already global in workers)
@@ -335,7 +335,7 @@ export default {
 
     try {
       const webhookEvent: WasenderWebhookEvent =
-        await wasender.handleWebhookEvent(adapter);
+        await wasenderapi.handleWebhookEvent(adapter);
       console.log(
         "CF Worker: Received verified webhook event:",
         webhookEvent.type

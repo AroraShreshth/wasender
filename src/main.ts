@@ -163,7 +163,7 @@ export class Wasender {
     const url = `${this.baseUrl}${path}`;
     const requestHeaders: HeadersInit = {
       "Accept": "application/json",
-      "User-Agent": `wasender-typescript-sdk/${SDK_VERSION}`
+      "User-Agent": `wasenderapi-typescript-sdk/${SDK_VERSION}`
     };
 
     if (usePersonaToken && this.personaAccessToken) {
