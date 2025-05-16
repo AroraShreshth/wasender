@@ -1,5 +1,5 @@
 {
-  "name": "wasender",
+  "name": "wasenderapi",
   "version": "0.1.1",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
