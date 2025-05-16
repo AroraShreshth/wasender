@@ -1,4 +1,4 @@
-# Wasender TypeScript SDK
+# Wasender API TypeScript SDK
 
 **Author:** Shreshth Arora
 
