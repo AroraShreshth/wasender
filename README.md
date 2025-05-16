@@ -304,14 +304,17 @@ async function listMySessions() {
 If you are in an environment where `globalThis.fetch` is not available (e.g., older Node.js versions) or if you want to use a custom fetch implementation (e.g., for advanced logging, mocking, or specific proxy configurations), you can pass it during SDK initialization:
 
 ```typescript
-// import fetch, { RequestInfo, RequestInit, Response } from 'cross-fetch'; // Example using cross-fetch
+import fetch, { RequestInfo, RequestInit, Response } from "cross-fetch"; // Example using cross-fetch
 
-// const customFetchImplementation = async (url: RequestInfo, options?: RequestInit): Promise<Response> => {
-//   console.log(`Making request to: ${url}`);
-//   return fetch(url, options);
-// };
+const customFetchImplementation = async (
+  url: RequestInfo,
+  options?: RequestInit
+): Promise<Response> => {
+  console.log(`Making request to: ${url}`);
+  return fetch(url, options);
+};
 
-// const wasender = createWasender(apiKey, undefined, customFetchImplementation);
+const wasender = createWasender(apiKey, undefined, customFetchImplementation);
 ```
 
 ### Retry Configuration
@@ -324,7 +327,12 @@ const retryConfig: RetryConfig = {
   maxRetries: 2, // Default: 0 (no retries if enabled is true but maxRetries is 0)
 };
 
-// const wasenderWithRetries = createWasender(apiKey, undefined, undefined, retryConfig);
+const wasenderWithRetries = createWasender(
+  apiKey,
+  undefined,
+  undefined,
+  retryConfig
+);
 ```
 
 The SDK will respect the `retry_after` header from the API if available, or use an exponential backoff strategy.
