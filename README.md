@@ -2,9 +2,9 @@
 
 **Author:** Shreshth Arora
 
-[![NPM Version](https://img.shields.io/npm/v/wasender?style=flat)](https://www.npmjs.com/package/wasender)
-[![NPM Downloads](https://img.shields.io/npm/dm/wasender?style=flat)](https://www.npmjs.com/package/wasender)
-[![License](https://img.shields.io/npm/l/wasender?style=flat)](https://github.com/AroraShreshth/wasender/blob/main/LICENSE)
+[![NPM Version](https://img.shields.io/npm/v/wasenderapi?style=flat)](https://www.npmjs.com/package/wasenderapi)
+[![NPM Downloads](https://img.shields.io/npm/dm/wasenderapi?style=flat)](https://www.npmjs.com/package/wasenderapi)
+[![License](https://img.shields.io/npm/l/wasenderapi?style=flat)](https://github.com/AroraShreshth/wasender/blob/main/LICENSE)
 [![TypeScript](https://img.shields.io/badge/written%20in-TypeScript-blue?style=flat&logo=typescript)](https://www.typescriptlang.org/)
 [![CI](https://github.com/AroraShreshth/wasender/actions/workflows/ci.yml/badge.svg)](https://github.com/AroraShreshth/wasender/actions/workflows/ci.yml)
 
@@ -38,15 +38,15 @@ A lightweight and robust TypeScript SDK for interacting with the Wasender API ([
 ## Installation
 
 ```bash
-npm install wasender
+npm install wasenderapi
 # or
-yarn add wasender
+yarn add wasenderapi
 ```
 
 ## SDK Initialization
 
 ```typescript
-import { createWasender, RetryConfig, FetchImplementation } from "wasender";
+import { createWasender, RetryConfig, FetchImplementation } from "wasenderapi";
 // For Node.js < 18 or environments without global fetch, you might need a polyfill
 // import fetch from 'cross-fetch';
 // const customFetch: FetchImplementation = fetch as FetchImplementation;
@@ -107,7 +107,7 @@ Send various types of messages including text, media (images, videos, documents,
 - **Detailed Documentation & Examples:** [`docs/messages.md`](./docs/messages.md)
 
 ```typescript
-import { TextOnlyMessage } from "wasender";
+import { TextOnlyMessage } from "wasenderapi";
 
 async function sendSimpleText() {
   try {
@@ -188,7 +188,7 @@ Send text messages to WhatsApp Channels (within Communities).
 - **Detailed Documentation & Examples:** [`docs/channel.md`](./docs/channel.md)
 
 ```typescript
-import { ChannelTextMessage } from "wasender";
+import { ChannelTextMessage } from "wasenderapi";
 
 async function sendToChannel(channelJid: string, text: string) {
   try {
@@ -219,7 +219,7 @@ import {
   WasenderWebhookEvent,
   WasenderWebhookEventType,
   WasenderAPIError,
-} from "wasender";
+} from "wasenderapi";
 
 async function handleIncomingWebhook(request: YourFrameworkRequest) {
   // Replace YourFrameworkRequest
