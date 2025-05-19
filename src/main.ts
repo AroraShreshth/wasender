@@ -158,7 +158,7 @@ export class Wasender {
     path: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     body?: Record<string, any> | null,
-    usePersonaToken: boolean = false
+    usePersonalToken: boolean = false
   ): Promise<{ response: TResponse; rateLimit: RateLimitInfo }> {
     const url = `${this.baseUrl}${path}`;
     const requestHeaders: HeadersInit = {
@@ -166,7 +166,7 @@ export class Wasender {
       "User-Agent": `wasenderapi-typescript-sdk/${SDK_VERSION}`
     };
 
-    if (usePersonaToken && this.personalAccessToken) {
+    if (usePersonalToken && this.personalAccessToken) {
       requestHeaders["Authorization"] = `Bearer ${this.personalAccessToken}`;
     } else {
       requestHeaders["Authorization"] = `Bearer ${this.apiKey}`;
@@ -327,21 +327,21 @@ export class Wasender {
   >(
     path: string,
     payload: TPayload,
-    usePersonaToken: boolean = false
+    usePersonalToken: boolean = false
   ): Promise<{ response: TSuccessResponse; rateLimit: RateLimitInfo }> {
     const apiPayload = payload ? { ...payload } : null;
     if (apiPayload && 'messageType' in apiPayload) {
       delete apiPayload.messageType;
     }
-    return this.request<TSuccessResponse>("POST", path, apiPayload, usePersonaToken);
+    return this.request<TSuccessResponse>("POST", path, apiPayload, usePersonalToken);
   }
   
   // General purpose GET
   private async getInternal<TSuccessResponse extends WasenderSuccessResponse>(
     path: string,
-    usePersonaToken: boolean = false
+    usePersonalToken: boolean = false
   ): Promise<{ response: TSuccessResponse; rateLimit: RateLimitInfo }> {
-    return this.request<TSuccessResponse>("GET", path, undefined, usePersonaToken);
+    return this.request<TSuccessResponse>("GET", path, undefined, usePersonalToken);
   }
 
   // General purpose PUT
@@ -351,17 +351,17 @@ export class Wasender {
   >(
     path: string,
     payload: TPayload,
-    usePersonaToken: boolean = false
+    usePersonalToken: boolean = false
   ): Promise<{ response: TSuccessResponse; rateLimit: RateLimitInfo }> {
-    return this.request<TSuccessResponse>("PUT", path, payload, usePersonaToken);
+    return this.request<TSuccessResponse>("PUT", path, payload, usePersonalToken);
   }
 
   // General purpose DELETE
   private async deleteInternal<TSuccessResponse extends WasenderSuccessResponse>(
     path: string,
-    usePersonaToken: boolean = false
+    usePersonalToken: boolean = false
   ): Promise<{ response: TSuccessResponse; rateLimit: RateLimitInfo }> {
-    return this.request<TSuccessResponse>("DELETE", path, undefined, usePersonaToken);
+    return this.request<TSuccessResponse>("DELETE", path, undefined, usePersonalToken);
   }
 
   // ---------- Generic Send Method (modified to use postInternal) ----------
