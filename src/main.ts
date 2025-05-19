@@ -106,7 +106,7 @@ export interface WebhookRequestAdapter {
 export class Wasender {
   private readonly baseUrl: string;
   private readonly apiKey: string;
-  private readonly personaAccessToken?: string;
+  private readonly personalAccessToken?: string;
   private readonly fetchImpl: FetchImplementation;
   private readonly retryConfig: Required<RetryConfig>;
   private readonly configuredWebhookSecret?: string;
@@ -117,7 +117,7 @@ export class Wasender {
     fetchImplementation?: FetchImplementation,
     retryOptions?: RetryConfig,
     webhookSecret?: string,
-    personaAccessToken?: string
+    personalAccessToken?: string
   ) {
     if (!apiKey) {
       throw new Error("WASENDER_API_KEY is required to initialize the Wasender SDK.");
@@ -130,7 +130,7 @@ export class Wasender {
         maxRetries: retryOptions?.maxRetries ?? 0,
     };
     this.configuredWebhookSecret = webhookSecret;
-    this.personaAccessToken = personaAccessToken;
+    this.personalAccessToken = personalAccessToken;
 
     if (!this.fetchImpl) {
         throw new Error("Fetch implementation is not available. Please provide one (e.g., for Node.js < 18 by polyfilling globalThis.fetch or passing a custom fetch)." );
@@ -166,8 +166,8 @@ export class Wasender {
       "User-Agent": `wasenderapi-typescript-sdk/${SDK_VERSION}`
     };
 
-    if (usePersonaToken && this.personaAccessToken) {
-      requestHeaders["Authorization"] = `Bearer ${this.personaAccessToken}`;
+    if (usePersonaToken && this.personalAccessToken) {
+      requestHeaders["Authorization"] = `Bearer ${this.personalAccessToken}`;
     } else {
       requestHeaders["Authorization"] = `Bearer ${this.apiKey}`;
     }
@@ -736,5 +736,5 @@ export const createWasender = (
     fetchImplementation?: FetchImplementation,
     retryOptions?: RetryConfig,
     webhookSecret?: string,
-    personaAccessToken?: string
-): Wasender => new Wasender(apiKey, baseUrl, fetchImplementation, retryOptions, webhookSecret, personaAccessToken);
+    personalAccessToken?: string
+): Wasender => new Wasender(apiKey, baseUrl, fetchImplementation, retryOptions, webhookSecret, personalAccessToken);
