@@ -8,17 +8,15 @@ import { RateLimitInfo, WasenderSuccessResponse } from "./messages";
 // ---------- Group Data Structures ----------
 
 export interface GroupParticipant {
-  /** The JID (Jabber ID) of the participant. */
-  jid: string;
+  /** The id (Jabber ID) of the participant. */
+  id: string;
   /** Indicates if the participant is an admin in the group. */
-  isAdmin: boolean;
-  /** Indicates if the participant is a super admin (owner/creator) of the group. */
-  isSuperAdmin: boolean; // Corrected from isSuperAdmin to match common WhatsApp terminology if applicable or keep as is if API specific
+  admin: string;
 }
 
 export interface BasicGroupInfo {
-  /** The JID (Jabber ID) of the group (e.g., '123456789-987654321@g.us'). */
-  jid: string;
+  /** The id (Jabber ID) of the group (e.g., '123456789-987654321@g.us'). */
+  id: string;
   /** The name or subject of the group. */
   name: string | null; // Name can sometimes be null or empty
   /** URL of the group's profile picture, if available. */
@@ -29,13 +27,27 @@ export interface GroupMetadata extends BasicGroupInfo {
   /** Timestamp of when the group was created. */
   creation: number;
   /** The JID of the group owner/creator. */
-  owner: string | undefined; // Owner might not always be present or could be a JID
+  owner: string | undefined;
   /** The description of the group. */
   desc?: string | null;
+  /** The owner of the group description. */
+  descOwner?: string | null;
+  /** The ID of the group description. */
+  descId?: string | null;
+  /** Whether the group is restricted to admin-only messages. */
+  restrict?: boolean;
+  /** Whether announcements are enabled for the group. */
+  announce?: boolean;
+  /** Size of the group. */
+  size?: number;
+  /** Owner of the group subject. */
+  subjectOwner?: string;
+  /** Timestamp when subject was last changed. */
+  subjectTime?: number;
   /** Array of participants in the group. */
   participants: GroupParticipant[];
-  /** The subject of the group (often same as name). */
-  subject?: string; // Explicitly adding subject as per API response example
+  /** The subject of the group. */
+  subject: string;
 }
 
 // ---------- API Request Payloads ----------

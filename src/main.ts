@@ -270,14 +270,14 @@ export class Wasender {
         };
       }
       
-      if (path.includes('/regenerate-key') && 'api_key' in responseBody && responseBody.success === true) {
+      if (path.includes('/regenerate-key') && 'api_key' in responseBody && responseBody.success) {
         return {
             response: responseBody as TResponse, 
             rateLimit: rateLimitInfo!,
         };
       }
 
-      if (!httpResponse.ok || (responseBody && 'success' in responseBody && typeof responseBody.success === 'boolean' && !responseBody.success)) {
+      if (!httpResponse.ok || (responseBody && 'success' in responseBody && !responseBody.success)) {
         const apiError = responseBody as WasenderErrorResponse; 
         const errorToThrow = new WasenderAPIError(
           apiError.message || "API request failed with an unspecified error.",
@@ -305,7 +305,7 @@ export class Wasender {
       }
       
       // This is the general success case for standard responses
-      if ('success' in responseBody && responseBody.success === true) {
+      if ('success' in responseBody && responseBody.success) {
         return {
           response: responseBody as TResponse,
           rateLimit: rateLimitInfo!,

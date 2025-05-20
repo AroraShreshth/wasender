@@ -117,7 +117,7 @@ export type LocationPin = LocationPinPayload;
 /** Standard API success response structure. */
 export interface WasenderSuccessResponse {
   success: true;
-  message: string;
+  message?: string;
 }
 
 /** Rate Limit Information extracted from response headers. */
