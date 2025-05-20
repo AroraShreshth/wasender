@@ -125,8 +125,8 @@ describe('Webhook handler', () => {
     });
 
     it('parses GroupsUpsertEvent correctly', async () => {
-      const participant1: GroupParticipant = { jid: '1234567890', isAdmin: true, isSuperAdmin: true };
-      const participant2: GroupParticipant = { jid: '0987654321', isAdmin: false, isSuperAdmin: false };
+      const participant1: GroupParticipant = { id: '1234567890', admin: "superadmin"};
+      const participant2: GroupParticipant = { id: '1234567890'};
       const groupData: GroupMetadata = {
         jid: '123456789-987654321@g.us',
         subject: 'Group Name',

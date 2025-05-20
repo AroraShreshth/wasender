@@ -282,90 +282,72 @@ describe('Session Type Definitions', () => {
     it('GetAllWhatsAppSessionsResult type should be correct', () => {
       const result: GetAllWhatsAppSessionsResult = {
         response: { success: true, message: 'Sessions retrieved', data: [mockWhatsAppSession] },
-        rateLimit: mockRateLimitInfo,
       };
       expect(result.response.message).toBe('Sessions retrieved');
       expect(result.response.data[0].name).toBe('Business WhatsApp');
-      expect(result.rateLimit.limit).toBe(100);
     });
 
     it('GetWhatsAppSessionDetailsResult type should be correct', () => {
       const result: GetWhatsAppSessionDetailsResult = {
         response: { success: true, message: 'Details retrieved', data: mockWhatsAppSession },
-        rateLimit: mockRateLimitInfo,
       };
       expect(result.response.message).toBe('Details retrieved');
       expect(result.response.data.id).toBe(1);
-      expect(result.rateLimit.remaining).toBe(99);
     });
     
     it('CreateWhatsAppSessionResult type should be correct', () => {
       const result: CreateWhatsAppSessionResult = {
         response: { success: true, message: 'Session created', data: mockWhatsAppSession },
-        rateLimit: mockRateLimitInfo,
       };
       expect(result.response.message).toBe('Session created');
       expect(result.response.data.status).toBe('CONNECTED');
-      expect(result.rateLimit.limit).toBe(100);
     });
 
     it('UpdateWhatsAppSessionResult type should be correct', () => {
       const result: UpdateWhatsAppSessionResult = {
         response: { success: true, message: 'Session updated', data: mockWhatsAppSession },
-        rateLimit: mockRateLimitInfo,
       };
       expect(result.response.message).toBe('Session updated');
       expect(result.response.data.phone_number).toBe('+1234567890');
-      expect(result.rateLimit.remaining).toBe(99);
     });
 
     it('DeleteWhatsAppSessionResult type should be correct', () => {
       const result: DeleteWhatsAppSessionResult = {
         response: { success: true, message: 'Session deleted', data: null },
-        rateLimit: mockRateLimitInfo,
       };
       expect(result.response.message).toBe('Session deleted');
       expect(result.response.data).toBeNull();
-      expect(result.rateLimit.limit).toBe(100);
     });
 
     it('ConnectSessionResult type should be correct', () => {
       const result: ConnectSessionResult = {
         response: { success: true, message: 'Connect action done', data: { status: 'NEED_SCAN', qrCode: 'testQR' } },
-        rateLimit: mockRateLimitInfo,
       };
       expect(result.response.message).toBe('Connect action done');
       expect(result.response.data.qrCode).toBe('testQR');
-      expect(result.rateLimit.remaining).toBe(99);
     });
 
     it('GetQRCodeResult type should be correct', () => {
       const result: GetQRCodeResult = {
         response: { success: true, message: 'QR code fetched', data: { qrCode: 'testQRagain' } },
-        rateLimit: mockRateLimitInfo,
       };
       expect(result.response.message).toBe('QR code fetched');
       expect(result.response.data.qrCode).toBe('testQRagain');
-      expect(result.rateLimit.limit).toBe(100);
     });
 
     it('DisconnectSessionResult type should be correct', () => {
       const result: DisconnectSessionResult = {
         response: { success: true, message: 'Disconnected action performed', data: { status: 'DISCONNECTED', message: 'Done' } },
-        rateLimit: mockRateLimitInfo,
       };
       expect(result.response.message).toBe('Disconnected action performed');
       expect(result.response.data.message).toBe('Done');
-      expect(result.rateLimit.remaining).toBe(99);
     });
 
     it('RegenerateApiKeyResult type should be correct', () => {
       const result: RegenerateApiKeyResult = {
         response: { success: true, api_key: 'newKey123' },
-        rateLimit: mockRateLimitInfo,
       };
       expect(result.response.api_key).toBe('newKey123');
-      expect(result.rateLimit.limit).toBe(100);
     });
     
     it('GetSessionStatusResult type should be correct', () => {
@@ -374,7 +356,6 @@ describe('Session Type Definitions', () => {
         rateLimit: mockRateLimitInfo,
       };
       expect(result.response.status).toBe<WhatsAppSessionStatus>('LOGGED_OUT');
-      expect(result.rateLimit.remaining).toBe(99);
     });
   });
 });

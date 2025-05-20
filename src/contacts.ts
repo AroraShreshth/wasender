@@ -22,6 +22,7 @@ export interface Contact {
   /** The contact\'s status message. */
   status?: string;
   /** Indicates if the contact exists on WhatsApp. */
+  exists?: boolean;
 }
 
 // ---------- API Response Types for Contacts ----------
@@ -55,23 +56,23 @@ export interface ContactActionResponse extends WasenderSuccessResponse {
 /** Combined result for a successful "get all contacts" API call. */
 export interface GetAllContactsResult {
   response: GetAllContactsResponse;
-  rateLimit: RateLimitInfo;
+  rateLimit?: RateLimitInfo;
 }
 
 /** Combined result for a successful "get contact info" API call. */
 export interface GetContactInfoResult {
   response: GetContactInfoResponse;
-  rateLimit: RateLimitInfo;
+  rateLimit?: RateLimitInfo;
 }
 
 /** Combined result for a successful "get contact profile picture" API call. */
 export interface GetContactProfilePictureResult {
   response: GetContactProfilePictureResponse;
-  rateLimit: RateLimitInfo;
+  rateLimit?: RateLimitInfo;
 }
 
 /** Combined result for a successful contact action (block/unblock) API call. */
 export interface ContactActionResult {
   response: ContactActionResponse;
-  rateLimit: RateLimitInfo;
+  rateLimit?: RateLimitInfo;
 }

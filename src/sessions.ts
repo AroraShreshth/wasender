@@ -130,52 +130,52 @@ export interface GetSessionStatusResponse {
 
 export interface GetAllWhatsAppSessionsResult {
   response: GetAllWhatsAppSessionsResponse;
-  rateLimit: RateLimitInfo;
+  rateLimit?: RateLimitInfo;
 }
 
 export interface GetWhatsAppSessionDetailsResult {
   response: GetWhatsAppSessionDetailsResponse;
-  rateLimit: RateLimitInfo;
+  rateLimit?: RateLimitInfo;
 }
 
 export interface CreateWhatsAppSessionResult {
   response: CreateWhatsAppSessionResponse;
-  rateLimit: RateLimitInfo;
+  rateLimit?: RateLimitInfo;
 }
 
 export interface UpdateWhatsAppSessionResult {
   response: UpdateWhatsAppSessionResponse;
-  rateLimit: RateLimitInfo;
+  rateLimit?: RateLimitInfo;
 }
 
 export interface DeleteWhatsAppSessionResult {
   response: DeleteWhatsAppSessionResponse;
-  rateLimit: RateLimitInfo;
+  rateLimit?: RateLimitInfo;
 }
 
 export interface ConnectSessionResult {
   response: ConnectSessionResponse;
-  rateLimit: RateLimitInfo;
+  rateLimit?: RateLimitInfo;
 }
 
 export interface GetQRCodeResult {
   response: GetQRCodeResponse;
-  rateLimit: RateLimitInfo;
+  rateLimit?: RateLimitInfo;
 }
 
 export interface DisconnectSessionResult {
   response: DisconnectSessionResponse;
-  rateLimit: RateLimitInfo;
+  rateLimit?: RateLimitInfo;
 }
 
 export interface RegenerateApiKeyResult {
     response: RegenerateApiKeyResponse; 
-    rateLimit: RateLimitInfo;
+    rateLimit?: RateLimitInfo;
 }
 
 // For GetSessionStatus, if it returns rate limits, it would be:
 export interface GetSessionStatusResult {
     response: GetSessionStatusResponse; 
-    rateLimit: RateLimitInfo; 
+    rateLimit?: RateLimitInfo;
 }
 // If not, GetSessionStatusResponse is used directly.

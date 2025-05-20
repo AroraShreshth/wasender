@@ -11,7 +11,7 @@ export interface GroupParticipant {
   /** The id (Jabber ID) of the participant. */
   id: string;
   /** Indicates if the participant is an admin in the group. */
-  admin: string;
+  admin?: string;
 }
 
 export interface BasicGroupInfo {
@@ -119,25 +119,25 @@ export interface UpdateGroupSettingsResponse extends WasenderSuccessResponse {
 
 export interface GetAllGroupsResult {
   response: GetAllGroupsResponse;
-  rateLimit: RateLimitInfo;
+  rateLimit?: RateLimitInfo;
 }
 
 export interface GetGroupMetadataResult {
   response: GetGroupMetadataResponse;
-  rateLimit: RateLimitInfo;
+  rateLimit?: RateLimitInfo;
 }
 
 export interface GetGroupParticipantsResult {
   response: GetGroupParticipantsResponse;
-  rateLimit: RateLimitInfo;
+  rateLimit?: RateLimitInfo;
 }
 
 export interface ModifyGroupParticipantsResult {
   response: ModifyGroupParticipantsResponse;
-  rateLimit: RateLimitInfo;
+  rateLimit?: RateLimitInfo;
 }
 
 export interface UpdateGroupSettingsResult {
   response: UpdateGroupSettingsResponse;
-  rateLimit: RateLimitInfo;
+  rateLimit?: RateLimitInfo;
 }
