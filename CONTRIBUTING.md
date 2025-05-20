@@ -7,8 +7,8 @@ We welcome contributions to this project! Please follow these guidelines to ensu
 1.  **Fork the Repository:** Start by forking the main repository to your own GitHub account.
 2.  **Clone the Repository:** Clone your forked repository to your local machine.
     ```bash
-    git clone https://github.com/AroraShreshth/wasenderapi-sdk.git
-    cd YOUR_REPOSITORY
+    git clone https://github.com/AroraShreshth/wasender-sdk.git
+    cd wasender-sdk
     ```
 3.  **Create a Branch:** Create a new branch for your feature or bug fix. Use a descriptive name for your branch.
     ```bash

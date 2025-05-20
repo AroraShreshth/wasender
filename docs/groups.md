@@ -21,10 +21,10 @@ import {
   Wasender,
   WasenderMessagePayload, // For sending messages
 } from "wasenderapi";
-import { WasenderAPIError } from "path-to-your-sdk/errors";
+import { WasenderAPIError } from "wasenderapi/errors";
 import {
   TextOnlyMessage, // Example message type
-} from "path-to-your-sdk/messages";
+} from "wasenderapi/messages";
 import {
   GetAllGroupsResult,
   GetGroupMetadataResult,
@@ -32,7 +32,7 @@ import {
   ModifyGroupParticipantsResult,
   UpdateGroupSettingsResult,
   UpdateGroupSettingsPayload,
-} from "path-to-your-sdk/groups";
+} from "wasenderapi/groups";
 
 const apiKey = process.env.WASENDER_API_KEY;
 

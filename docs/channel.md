@@ -39,10 +39,10 @@ Here's how you can send a text message to a WhatsApp Channel:
 
 ```typescript
 // examples/send-channel-message.ts
-import { createWasender, Wasender } from "wasenderapi"; // Adjust path
-import { WasenderAPIError } from "path-to-your-sdk/errors"; // Adjust path
-import { ChannelTextMessage } from "path-to-your-sdk/channel"; // Adjust path
-import { WasenderSendResult } from "path-to-your-sdk/messages"; // Adjust path
+import { createWasender, Wasender } from "wasenderapi"; 
+import { WasenderAPIError } from "wasenderapi/errors";
+import { ChannelTextMessage } from "wasenderapi/channel"; 
+import { WasenderSendResult } from "wasenderapi/messages"; 
 
 const apiKey = process.env.WASENDER_API_KEY;
 

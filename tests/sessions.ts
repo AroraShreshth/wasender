@@ -379,14 +379,14 @@ describe('Session Type Definitions', () => {
   });
 });
 
-describe('Session endpoints persona token tests', () => {
+describe('Session endpoints personal token tests', () => {
   const apiKey = "apiKey123";
-  const personaToken = "personaToken123";
+  const personalToken = "personalToken123";
 
-  const wasenderapi = createWasender(apiKey, undefined, undefined, undefined, undefined, personaToken);
+  const wasenderapi = createWasender(apiKey, undefined, undefined, undefined, undefined, personalToken);
 
-  // Test account-scoped endpoints (should use persona token)
-  test('getAllWhatsAppSessions should use persona token as Bearer token', async () => {
+  // Test account-scoped endpoints (should use personal token)
+  test('getAllWhatsAppSessions should use personal token as Bearer token', async () => {
     const mockFetch = jest.fn().mockResolvedValue({
       ok: true,
       status: 200,
@@ -394,14 +394,14 @@ describe('Session endpoints persona token tests', () => {
       json: () => Promise.resolve({ success: true, data: [] })
     });
 
-    const testWasender = createWasender(apiKey, undefined, mockFetch, undefined, undefined, personaToken);
+    const testWasender = createWasender(apiKey, undefined, mockFetch, undefined, undefined, personalToken);
     await testWasender.getAllWhatsAppSessions();
 
     expect(mockFetch).toHaveBeenCalledWith(
       expect.any(String),
       expect.objectContaining({
         headers: expect.objectContaining({
-          'Authorization': `Bearer ${personaToken}`
+          'Authorization': `Bearer ${personalToken}`
         })
       })
     );
@@ -416,7 +416,7 @@ describe('Session endpoints persona token tests', () => {
       json: () => Promise.resolve({ status: 'CONNECTED' })
     });
 
-    const testWasender = createWasender(apiKey, undefined, mockFetch, undefined, undefined, personaToken);
+    const testWasender = createWasender(apiKey, undefined, mockFetch, undefined, undefined, personalToken);
     await testWasender.getSessionStatus();
 
     expect(mockFetch).toHaveBeenCalledWith(
@@ -429,15 +429,15 @@ describe('Session endpoints persona token tests', () => {
     );
   });
 
-  // Test error handling when persona token is missing for account-scoped endpoint
-  test('should throw error when persona token is missing for account-scoped endpoint', async () => {
+  // Test error handling when personal token is missing for account-scoped endpoint
+  test('should throw error when personal token is missing for account-scoped endpoint', async () => {
     const testWasender = createWasender(apiKey);
     
     await expect(testWasender.getAllWhatsAppSessions()).rejects.toThrow(WasenderAPIError);
   });
 
-  // Test successful session creation with persona token
-  test('createWhatsAppSession should use persona token as Bearer token', async () => {
+  // Test successful session creation with personal token
+  test('createWhatsAppSession should use personal token as Bearer token', async () => {
     const mockFetch = jest.fn().mockResolvedValue({
       ok: true,
       status: 200,
@@ -452,7 +452,7 @@ describe('Session endpoints persona token tests', () => {
       })
     });
 
-    const testWasender = createWasender(apiKey, undefined, mockFetch, undefined, undefined, personaToken);
+    const testWasender = createWasender(apiKey, undefined, mockFetch, undefined, undefined, personalToken);
     const result = await testWasender.createWhatsAppSession({
       name: 'Test Session',
       phone_number: '+1234567890',
@@ -464,7 +464,7 @@ describe('Session endpoints persona token tests', () => {
       expect.any(String),
       expect.objectContaining({
         headers: expect.objectContaining({
-          'Authorization': `Bearer ${personaToken}`
+          'Authorization': `Bearer ${personalToken}`
         })
       })
     );

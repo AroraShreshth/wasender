@@ -16,7 +16,7 @@ All examples assume you have initialized the SDK as follows. You can place this 
 
 ```typescript
 // main-setup.ts
-import { createWasender, Wasender, RetryConfig } from "wasenderapi"; // Adjust path to your SDK files
+import { createWasender, Wasender, RetryConfig } from "wasenderapi"; 
 import {
   TextOnlyMessage,
   ImageUrlMessage,
@@ -27,7 +27,7 @@ import {
   ContactCardMessage,
   LocationPinMessage,
   WasenderAPIError,
-} from "path-to-your-sdk/messages"; // Adjust path to your SDK files
+} from "wasenderapi/messages"; 
 
 const apiKey = process.env.WASENDER_API_KEY;
 
@@ -105,7 +105,7 @@ async function sendMessageExample(
 // --- Individual Message Type Examples Follow ---
 ```
 
-**Note:** Replace `"wasenderapi"` and `"path-to-your-sdk/messages"` with the actual paths to your SDK files. Also, set the `WASENDER_API_KEY` environment variable.
+**Note:** Replace `"wasenderapi"` and `"wasenderapi/messages"` with the actual paths to your SDK files. Also, set the `WASENDER_API_KEY` environment variable.
 
 ## Sending Different Message Types
 

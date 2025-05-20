@@ -16,15 +16,15 @@ All examples assume you have initialized the SDK as follows. You can place this 
 
 ```typescript
 // contact-examples-setup.ts
-import { createWasender, Wasender } from "wasenderapi"; // Adjust path to your SDK files
-import { WasenderAPIError } from "path-to-your-sdk/errors"; // Adjust path
+import { createWasender, Wasender } from "wasenderapi";
+import { WasenderAPIError } from "wasenderapi/errors"; 
 // Import contact-specific result types if you need to strongly type the results
 import {
   GetAllContactsResult,
   GetContactInfoResult,
   GetContactProfilePictureResult,
   ContactActionResult,
-} from "path-to-your-sdk/contacts"; // Adjust path
+} from "wasenderapi/contacts"; // Adjust path
 
 const apiKey = process.env.WASENDER_API_KEY;
 
@@ -67,7 +67,7 @@ function handleApiError(error: unknown, operation: string) {
 }
 ```
 
-**Note:** Replace `"wasenderapi"`, `"path-to-your-sdk/errors"`, and `"path-to-your-sdk/contacts"` with the actual paths to your SDK files. Ensure the `WASENDER_API_KEY` environment variable is set.
+**Note:** Replace `"wasenderapi"`, `"wasenderapi/errors"`, and `"wasenderapi/contacts"` with the actual paths to your SDK files. Ensure the `WASENDER_API_KEY` environment variable is set.
 
 ## Contact Management Operations
 

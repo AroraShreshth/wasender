@@ -12,8 +12,7 @@ This document explains how to receive and process webhook events from Wasender u
 To handle webhooks, you must provide your `webhookSecret` when initializing the Wasender SDK client.
 
 ```typescript
-import { createWasender } from "wasenderapi"; // Adjust path if necessary
-
+import { createWasender } from "wasenderapi"; 
 const apiKey = process.env.WASENDER_API_KEY!;
 const webhookSecret = process.env.WASENDER_WEBHOOK_SECRET!;
 

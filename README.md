@@ -4,9 +4,9 @@
 
 [![NPM Version](https://img.shields.io/npm/v/wasenderapi?style=flat)](https://www.npmjs.com/package/wasenderapi)
 [![NPM Downloads](https://img.shields.io/npm/dm/wasenderapi?style=flat)](https://www.npmjs.com/package/wasenderapi)
-[![License](https://img.shields.io/npm/l/wasenderapi?style=flat)](https://github.com/AroraShreshth/wasenderapi/blob/main/LICENSE)
+[![License](https://img.shields.io/npm/l/wasenderapi?style=flat)](https://github.com/AroraShreshth/wasender/blob/main/LICENSE)
 [![TypeScript](https://img.shields.io/badge/written%20in-TypeScript-blue?style=flat&logo=typescript)](https://www.typescriptlang.org/)
-[![CI](https://github.com/AroraShreshth/wasenderapi/actions/workflows/ci.yml/badge.svg)](https://github.com/AroraShreshth/wasenderapi/actions/workflows/ci.yml)
+[![CI](https://github.com/AroraShreshth/wasender/actions/workflows/ci.yml/badge.svg)](https://github.com/AroraShreshth/wasender/actions/workflows/ci.yml)
 
 A lightweight and robust TypeScript SDK for interacting with the Wasender API ([https://www.wasenderapi.com](https://www.wasenderapi.com)). This SDK simplifies sending various types of WhatsApp messages, managing contacts and groups, handling session statuses, and processing incoming webhooks.
 
@@ -53,7 +53,7 @@ import { createWasender, RetryConfig, FetchImplementation } from "wasenderapi";
 
 // Required credentials
 const apiKey = process.env.WASENDER_API_KEY!;
-const personaToken = process.env.WASENDER_PERSONA_ACCESS_TOKEN; // Required for account-scoped endpoints
+const personalToken = process.env.WASENDER_PERSONAL_ACCESS_TOKEN; // Required for account-scoped endpoints
 const webhookSecret = process.env.WASENDER_WEBHOOK_SECRET; // Required for webhook handling
 
 // Optional: Configure retry behavior for rate limit errors
@@ -69,20 +69,20 @@ const wasenderapi = createWasender(
   undefined,                 // Optional: customFetch implementation
   retryOptions,             // Optional: retry configuration
   webhookSecret,            // Optional: webhook secret for webhook handling
-  personaToken              // Optional: persona token for account-scoped endpoints
+  personalToken              // Optional: personal token for account-scoped endpoints
 );
 
 // Basic initialization (session-scoped endpoints only)
 const basicWasender = createWasender(apiKey);
 
-// Initialize with persona token (for account management)
+// Initialize with personal token (for account management)
 const accountWasender = createWasender(
   apiKey,
   undefined,
   undefined,
   undefined,
   undefined,
-  personaToken
+  personalToken
 );
 
 console.log("Wasender SDK Initialized.");
@@ -91,7 +91,7 @@ console.log("Wasender SDK Initialized.");
 **Important:** 
 - Store your credentials securely (e.g., as environment variables)
 - `WASENDER_API_KEY` is required for all endpoints
-- `WASENDER_PERSONA_ACCESS_TOKEN` is required for account-scoped endpoints
+- `WASENDER_PERSONAL_ACCESS_TOKEN` is required for account-scoped endpoints
 - `WASENDER_WEBHOOK_SECRET` is required if you plan to use webhook handling
 
 ## Authentication
@@ -103,9 +103,9 @@ The SDK supports two types of authentication:
    - Set via environment variable: `WASENDER_API_KEY`
    - Or pass directly to the constructor
 
-2. **Persona Access Token** (Required for account-scoped endpoints)
+2. **Personal Access Token** (Required for account-scoped endpoints)
    - Used for account management endpoints
-   - Set via environment variable: `WASENDER_PERSONA_ACCESS_TOKEN`
+   - Set via environment variable: `WASENDER_PERSONAL_ACCESS_TOKEN`
    - Or pass directly to the constructor
 
 ## Core Concepts

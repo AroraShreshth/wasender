@@ -17,7 +17,7 @@ All examples assume SDK initialization as shown below. Adjust paths to your SDK 
 ```typescript
 // session-examples-setup.ts
 import { createWasender, Wasender } from "wasenderapi"; // Adjust path
-import { WasenderAPIError } from "path-to-your-sdk/errors"; // Adjust path
+import { WasenderAPIError } from "wasenderapi/errors"; // Adjust path
 import {
   // WhatsAppSession, // Individual session type, if needed directly
   CreateWhatsAppSessionPayload,
@@ -33,10 +33,10 @@ import {
   RegenerateApiKeyResult,
   GetSessionStatusResult,
   // WhatsAppSessionStatus // Type for status strings
-} from "path-to-your-sdk/sessions"; // Adjust path
+} from "wasenderapi/sessions"; // Adjust path
 
 const apiKey = process.env.WASENDER_API_KEY;
-const personalAccessToken = process.env.WASENDER_PERSONA_ACCESS_TOKEN;
+const personalAccessToken = process.env.WASENDER_PERSONAL_ACCESS_TOKEN;
 
 if (!apiKey) {
   console.error("Error: WASENDER_API_KEY environment variable is not set.");
