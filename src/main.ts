@@ -10,19 +10,19 @@ import {
   WasenderSuccessResponse,
   RateLimitInfo,
   WasenderSendResult
-} from "./messages";
+} from "./messages.ts";
 
 import {
   WasenderAPIError,
   WasenderErrorResponse,
   WasenderAPIRawResponse
-} from "./errors";
+} from "./errors.ts";
 
 import {
     WEBHOOK_SIGNATURE_HEADER,
     verifyWasenderWebhookSignature,
     WasenderWebhookEvent
-} from "./webhook";
+} from "./webhook.ts";
 
 import {
   GetAllContactsResult,
@@ -33,7 +33,7 @@ import {
   GetContactInfoResponse,
   GetContactProfilePictureResponse,
   ContactActionResponse
-} from "./contacts"; // Added imports for contact types
+} from "./contacts.ts"; // Added imports for contact types
 import {
   GetAllGroupsResult,
   GetGroupMetadataResult,
@@ -47,7 +47,7 @@ import {
   ModifyGroupParticipantsPayload,
   UpdateGroupSettingsPayload,
   UpdateGroupSettingsResponse
-} from "./groups"; // Added imports for group types
+} from "./groups.ts"; // Added imports for group types
 import {
   WhatsAppSession, // Keep if used directly, otherwise covered by result types
   CreateWhatsAppSessionPayload,
@@ -73,7 +73,7 @@ import {
   DisconnectSessionResponse,
   RegenerateApiKeyResponse,
   GetSessionStatusResponse
-} from "./sessions"; // Added imports for session types
+} from "./sessions.ts"; // Added imports for session types
 
 const SDK_VERSION = "0.1.0";
 
@@ -105,22 +105,25 @@ export interface WebhookRequestAdapter {
 
 export class Wasender {
   private readonly baseUrl: string;
-  private readonly apiKey: string;
+  private readonly apiKey: string | undefined;
+  private readonly personalAccessToken?: string;
   private readonly fetchImpl: FetchImplementation;
   private readonly retryConfig: Required<RetryConfig>;
   private readonly configuredWebhookSecret?: string;
 
   constructor(
-    apiKey: string, 
+    apiKey: string | undefined,
+    personalAccessToken?: string,
     baseUrl: string = "https://www.wasenderapi.com/api", 
     fetchImplementation?: FetchImplementation,
     retryOptions?: RetryConfig,
     webhookSecret?: string
   ) {
-    if (!apiKey) {
-      throw new Error("WASENDER_API_KEY is required to initialize the Wasender SDK.");
+    if (apiKey === undefined && personalAccessToken === undefined) {
+      throw new Error("Either an API Key (for session operations) or a Personal Access Token (for session management) must be provided to initialize the Wasender SDK.");
     }
     this.apiKey = apiKey;
+    this.personalAccessToken = personalAccessToken;
     this.baseUrl = baseUrl.replace(/\/$/, ""); // Ensure no trailing slash
     this.fetchImpl = fetchImplementation || globalThis.fetch;
     this.retryConfig = {
@@ -157,8 +160,28 @@ export class Wasender {
     body?: Record<string, any> | null
   ): Promise<{ response: TResponse; rateLimit: RateLimitInfo }> {
     const url = `${this.baseUrl}${path}`;
+
+    // Determine which token to use
+    const isSessionManagementPath = path.startsWith("/whatsapp-sessions") || path === "/status";
+    let tokenToUse: string | undefined;
+
+    if (isSessionManagementPath) {
+      if (!this.personalAccessToken) {
+        throw new WasenderAPIError("Personal Access Token is required for this operation but was not provided during SDK initialization.", 401);
+      }
+      tokenToUse = this.personalAccessToken;
+    } else {
+      if (!this.apiKey) {
+        // If apiKey is generally required for non-session-management paths but not provided.
+        // This could happen if SDK was initialized only with PAT for session management
+        // and then an attempt is made to call, e.g., send-message.
+        throw new WasenderAPIError("Session API Key is required for this operation but was not provided or is not applicable.", 401);
+      }
+      tokenToUse = this.apiKey;
+    }
+
     const requestHeaders: HeadersInit = {
-      "Authorization": `Bearer ${this.apiKey}`,
+      "Authorization": `Bearer ${tokenToUse}`,
       "Accept": "application/json",
       "User-Agent": `wasender-typescript-sdk/${SDK_VERSION}`
     };
@@ -727,9 +750,10 @@ export class Wasender {
 
 // ---------- Example Helper Factory ----------
 export const createWasender = (
-    apiKey: string, 
+    apiKey: string | undefined,
+    personalAccessToken?: string,
     baseUrl?: string, 
     fetchImplementation?: FetchImplementation,
     retryOptions?: RetryConfig,
     webhookSecret?: string 
-): Wasender => new Wasender(apiKey, baseUrl, fetchImplementation, retryOptions, webhookSecret);
+): Wasender => new Wasender(apiKey, personalAccessToken, baseUrl, fetchImplementation, retryOptions, webhookSecret);

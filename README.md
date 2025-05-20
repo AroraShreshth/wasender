@@ -30,7 +30,8 @@ A lightweight and robust TypeScript SDK for interacting with the Wasender API ([
 ## Prerequisites
 
 - Node.js (version compatible with `fetch` API, or use a polyfill like `cross-fetch`)
-- A Wasender API Key from [https://www.wasenderapi.com](https://www.wasenderapi.com).
+- **Personal Access Token (PAT):** For account-level operations like session management (creating, listing sessions). Obtain this from your Wasender Dashboard (Settings > Personal Access Token).
+- **Session-Specific API Key:** For operations _within_ an active session (sending messages, managing contacts/groups). This key is generated when a WhatsApp session is connected via Wasender.
 - If using webhooks:
   - A publicly accessible HTTPS URL for your webhook endpoint.
   - A Webhook Secret generated from the Wasender dashboard.
@@ -51,7 +52,8 @@ import { createWasender, RetryConfig, FetchImplementation } from "wasenderapi";
 // import fetch from 'cross-fetch';
 // const customFetch: FetchImplementation = fetch as FetchImplementation;
 
-const apiKey = process.env.WASENDER_API_KEY!;
+const apiKey = process.env.WASENDER_API_KEY; // Session-specific API key
+const personalAccessToken = process.env.WASENDER_PERSONAL_ACCESS_TOKEN; // Account-level PAT
 const webhookSecret = process.env.WASENDER_WEBHOOK_SECRET; // Required for wasender.handleWebhookEvent()
 
 // Optional: Configure retry behavior for rate limit errors
@@ -60,8 +62,13 @@ const retryOptions: RetryConfig = {
   maxRetries: 3, // Attempt up to 3 retries on HTTP 429 errors
 };
 
+// Initialize with the appropriate token(s) for your needs:
+// - Use 'personalAccessToken' for managing sessions (create, list, delete, connect, status).
+// - Use 'apiKey' for operations tied to an active session (send messages, manage contacts/groups).
+// Both can be provided if your application performs both types of operations.
 const wasender = createWasender(
-  apiKey,
+  apiKey, // Can be undefined if only using PAT
+  personalAccessToken, // Can be undefined if only using session-specific apiKey
   undefined, // Optional: baseUrl, defaults to "https://www.wasenderapi.com/api"
   undefined, // Optional: customFetch implementation (e.g., for Node.js < 18)
   retryOptions,
@@ -71,7 +78,10 @@ const wasender = createWasender(
 console.log("Wasender SDK Initialized.");
 ```
 
-**Important:** Always store your `WASENDER_API_KEY` and `WASENDER_WEBHOOK_SECRET` securely (e.g., as environment variables).
+**Important:**
+
+- Always store your `WASENDER_API_KEY` (session-specific), `WASENDER_PERSONAL_ACCESS_TOKEN`, and `WASENDER_WEBHOOK_SECRET` securely (e.g., as environment variables).
+- The SDK requires at least one token (`apiKey` or `personalAccessToken`) to be provided during initialization. The specific token used for an API call depends on the nature of the operation (session management vs. in-session actions).
 
 ## Core Concepts
 
@@ -278,17 +288,18 @@ async function handleIncomingWebhook(request: YourFrameworkRequest) {
 
 ### 6. Managing Sessions
 
-Create, list, update, delete sessions, connect/disconnect, get QR codes, and check session status.
+Create, list, update, delete sessions, connect/disconnect, get QR codes, and check session status. These operations typically require a **Personal Access Token** for authentication.
 
 - **Detailed Documentation & Examples:** [`docs/sessions.md`](./docs/sessions.md)
 
 ```typescript
 async function listMySessions() {
   try {
-    const result = await wasender.getSessions(); // Method is listed in features.
+    // This operation uses the Personal Access Token provided during SDK initialization.
+    const result = await wasender.getAllWhatsAppSessions();
     console.log(`Found ${result.response.data.length} sessions.`);
     if (result.response.data.length > 0) {
-      console.log("First session ID:", result.response.data[0].sessionId);
+      console.log("First session ID:", result.response.data[0].id); // Corrected to .id
     }
   } catch (error) {
     console.error("Error fetching sessions:", error);

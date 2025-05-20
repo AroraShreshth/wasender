@@ -37,37 +37,39 @@ export function verifyWasenderWebhookSignature(
     return false;
   }
   // IMPORTANT: This is a simple check based on initial documentation.
-  // Verify with Wasender if HMAC-SHA256 or similar should be used for robust security.
+
   return requestSignature === configuredSecret;
 }
 
 /**
  * Known webhook event types from Wasender.
  */
-export enum WasenderWebhookEventType {
+export const WasenderWebhookEventType = {
   // Chat Events
-  ChatsUpsert = 'chats.upsert',
-  ChatsUpdate = 'chats.update',
-  ChatsDelete = 'chats.delete',
+  ChatsUpsert: 'chats.upsert',
+  ChatsUpdate: 'chats.update',
+  ChatsDelete: 'chats.delete',
   // Group Events
-  GroupsUpsert = 'groups.upsert',
-  GroupsUpdate = 'groups.update',
-  GroupParticipantsUpdate = 'group-participants.update',
+  GroupsUpsert: 'groups.upsert',
+  GroupsUpdate: 'groups.update',
+  GroupParticipantsUpdate: 'group-participants.update',
   // Contact Events
-  ContactsUpsert = 'contacts.upsert',
-  ContactsUpdate = 'contacts.update',
+  ContactsUpsert: 'contacts.upsert',
+  ContactsUpdate: 'contacts.update',
   // Message Events
-  MessagesUpsert = 'messages.upsert',      // New incoming message
-  MessagesUpdate = 'messages.update',      // Message status update (e.g., delivered, read by recipient)
-  MessagesDelete = 'messages.delete',
-  MessagesReaction = 'messages.reaction',
+  MessagesUpsert: 'messages.upsert',      // New incoming message
+  MessagesUpdate: 'messages.update',      // Message status update (e.g., delivered, read by recipient)
+  MessagesDelete: 'messages.delete',
+  MessagesReaction: 'messages.reaction',
   // Message Receipt (specific to a user in a group or a direct chat)
-  MessageReceiptUpdate = 'message-receipt.update',
+  MessageReceiptUpdate: 'message-receipt.update',
   // Session Events
-  MessageSent = 'message.sent',          // Message successfully sent *from your session*
-  SessionStatus = 'session.status',
-  QrCodeUpdated = 'qrcode.updated',
-}
+  MessageSent: 'message.sent',          // Message successfully sent *from your session*
+  SessionStatus: 'session.status',
+  QrCodeUpdated: 'qrcode.updated',
+} as const;
+
+export type WasenderWebhookEventType = typeof WasenderWebhookEventType[keyof typeof WasenderWebhookEventType];
 
 /**
  * Base interface for all Wasender webhook events.
@@ -77,8 +79,8 @@ export interface BaseWebhookEvent<T extends WasenderWebhookEventType, D = any> {
   type: T;
   /** Timestamp of the event generation (example, confirm actual structure). */
   timestamp?: number; // Unix timestamp
-  /** The actual data payload for the event. */
-  data: D;
+  /** The actual data payload for the event. Can be a single object or an array of objects. */
+  data: D | D[];
   /** Session ID or identifier associated with the event (example). */
   sessionId?: string;
 }
@@ -102,9 +104,9 @@ export interface ChatEntry {
   // ... other chat properties
 }
 
-export type ChatsUpsertEvent = BaseWebhookEvent<WasenderWebhookEventType.ChatsUpsert, ChatEntry[]>;
-export type ChatsUpdateEvent = BaseWebhookEvent<WasenderWebhookEventType.ChatsUpdate, Partial<ChatEntry>[]>; // Updates are often partial
-export type ChatsDeleteEvent = BaseWebhookEvent<WasenderWebhookEventType.ChatsDelete, string[]>; // Array of chat IDs (JIDs)
+export type ChatsUpsertEvent = BaseWebhookEvent<typeof WasenderWebhookEventType.ChatsUpsert, ChatEntry[]>;
+export type ChatsUpdateEvent = BaseWebhookEvent<typeof WasenderWebhookEventType.ChatsUpdate, Partial<ChatEntry>[]>; // Updates are often partial
+export type ChatsDeleteEvent = BaseWebhookEvent<typeof WasenderWebhookEventType.ChatsDelete, string[]>; // Array of chat IDs (JIDs)
 
 // ---------- Group Event Payloads ----------
 export interface GroupMetadata {
@@ -119,17 +121,17 @@ export interface GroupMetadata {
   // ... other group properties
 }
 
-export type GroupsUpsertEvent = BaseWebhookEvent<WasenderWebhookEventType.GroupsUpsert, GroupMetadata[]>;
-export type GroupsUpdateEvent = BaseWebhookEvent<WasenderWebhookEventType.GroupsUpdate, Partial<GroupMetadata>[]>; // Updates might be partial
+export type GroupsUpsertEvent = BaseWebhookEvent<typeof WasenderWebhookEventType.GroupsUpsert, GroupMetadata[]>;
+export type GroupsUpdateEvent = BaseWebhookEvent<typeof WasenderWebhookEventType.GroupsUpdate, Partial<GroupMetadata>[]>; // Updates might be partial
 
-import { GroupParticipant as GroupParticipantObject } from './groups'; // This import is used by GroupMetadata now
+import { GroupParticipant as GroupParticipantObject } from './groups.ts'; // This import is used by GroupMetadata now
 
 export interface GroupParticipantsUpdateData {
   jid: string; // Group JID
   participants: Array<string | GroupParticipantObject>; // Array of participant JIDs affected or participant objects
   action: 'add' | 'remove' | 'promote' | 'demote';
 }
-export type GroupParticipantsUpdateEvent = BaseWebhookEvent<WasenderWebhookEventType.GroupParticipantsUpdate, GroupParticipantsUpdateData>;
+export type GroupParticipantsUpdateEvent = BaseWebhookEvent<typeof WasenderWebhookEventType.GroupParticipantsUpdate, GroupParticipantsUpdateData>;
 
 // ---------- Contact Event Payloads ----------
 export interface ContactEntry {
@@ -141,8 +143,8 @@ export interface ContactEntry {
   imgUrl?: string; // URL to profile picture (may be temporary)
   // ... other contact properties
 }
-export type ContactsUpsertEvent = BaseWebhookEvent<WasenderWebhookEventType.ContactsUpsert, ContactEntry[]>;
-export type ContactsUpdateEvent = BaseWebhookEvent<WasenderWebhookEventType.ContactsUpdate, Partial<ContactEntry>[]>;
+export type ContactsUpsertEvent = BaseWebhookEvent<typeof WasenderWebhookEventType.ContactsUpsert, ContactEntry[]>;
+export type ContactsUpdateEvent = BaseWebhookEvent<typeof WasenderWebhookEventType.ContactsUpdate, Partial<ContactEntry>[]>;
 
 // ---------- Message Event Payloads ----------
 export interface MessageContent {
@@ -165,7 +167,7 @@ export interface MessagesUpsertData {
   messageTimestamp?: number; // Unix timestamp of the message
   // ... other properties related to a new message
 }
-export type MessagesUpsertEvent = BaseWebhookEvent<WasenderWebhookEventType.MessagesUpsert, MessagesUpsertData>; // Typically one message per event, but API might send an array.
+export type MessagesUpsertEvent = BaseWebhookEvent<typeof WasenderWebhookEventType.MessagesUpsert, MessagesUpsertData>; // Typically one message per event, but API might send an array.
                                                                                                               // The example showed a single object for `data`.
 
 export interface MessageUpdate {
@@ -176,12 +178,12 @@ export interface MessagesUpdateDataEntry {
     key: MessageKey;
     update: MessageUpdate;
 }
-export type MessagesUpdateEvent = BaseWebhookEvent<WasenderWebhookEventType.MessagesUpdate, MessagesUpdateDataEntry[]>;
+export type MessagesUpdateEvent = BaseWebhookEvent<typeof WasenderWebhookEventType.MessagesUpdate, MessagesUpdateDataEntry[]>;
 
 export interface MessagesDeleteData {
     keys: MessageKey[];
 }
-export type MessagesDeleteEvent = BaseWebhookEvent<WasenderWebhookEventType.MessagesDelete, MessagesDeleteData>;
+export type MessagesDeleteEvent = BaseWebhookEvent<typeof WasenderWebhookEventType.MessagesDelete, MessagesDeleteData>;
 
 export interface Reaction {
     text: string; // The emoji reaction
@@ -193,7 +195,7 @@ export interface MessagesReactionDataEntry {
     key: MessageKey; // Key of the message that received the reaction
     reaction: Reaction; 
 }
-export type MessagesReactionEvent = BaseWebhookEvent<WasenderWebhookEventType.MessagesReaction, MessagesReactionDataEntry[]>;
+export type MessagesReactionEvent = BaseWebhookEvent<typeof WasenderWebhookEventType.MessagesReaction, MessagesReactionDataEntry[]>;
 
 // ---------- Message Receipt Update Event Payloads ----------
 export interface Receipt {
@@ -205,7 +207,7 @@ export interface MessageReceiptUpdateDataEntry {
     key: MessageKey; // Key of the message this receipt pertains to
     receipt: Receipt;
 }
-export type MessageReceiptUpdateEvent = BaseWebhookEvent<WasenderWebhookEventType.MessageReceiptUpdate, MessageReceiptUpdateDataEntry[]>;
+export type MessageReceiptUpdateEvent = BaseWebhookEvent<typeof WasenderWebhookEventType.MessageReceiptUpdate, MessageReceiptUpdateDataEntry[]>;
 
 // ---------- Session Event Payloads ----------
 export interface MessageSentData {
@@ -213,20 +215,20 @@ export interface MessageSentData {
   message?: MessageContent;
   status?: string; // e.g., "sent", "pending"
 }
-export type MessageSentEvent = BaseWebhookEvent<WasenderWebhookEventType.MessageSent, MessageSentData>;
+export type MessageSentEvent = BaseWebhookEvent<typeof WasenderWebhookEventType.MessageSent, MessageSentData>;
 
 export interface SessionStatusData {
   status: 'connected' | 'disconnected' | 'connecting' | 'error' | 'logged_out' | 'need_scan';
   session_id?: string;
   reason?: string;
 }
-export type SessionStatusEvent = BaseWebhookEvent<WasenderWebhookEventType.SessionStatus, SessionStatusData>;
+export type SessionStatusEvent = BaseWebhookEvent<typeof WasenderWebhookEventType.SessionStatus, SessionStatusData>;
 
 export interface QrCodeUpdatedData {
   qr: string; // Base64 encoded QR code image data URI
   session_id?: string;
 }
-export type QrCodeUpdatedEvent = BaseWebhookEvent<WasenderWebhookEventType.QrCodeUpdated, QrCodeUpdatedData>;
+export type QrCodeUpdatedEvent = BaseWebhookEvent<typeof WasenderWebhookEventType.QrCodeUpdated, QrCodeUpdatedData>;
 
 // ---------- Discriminated Union of All Webhook Events ----------
 export type WasenderWebhookEvent =

@@ -3,7 +3,7 @@
  * Defines structures for group information, participants, API responses related to groups.
  */
 
-import { RateLimitInfo, WasenderSuccessResponse } from "./messages";
+import { RateLimitInfo, WasenderSuccessResponse } from "./messages.ts";
 
 // ---------- Group Data Structures ----------
 

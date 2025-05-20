@@ -40,8 +40,13 @@ import {
 // import fetch from 'cross-fetch';
 // const customFetch: FetchImplementation = fetch as FetchImplementation;
 
-const apiKey = process.env.WASENDER_API_KEY!;
+const apiKey = process.env.WASENDER_API_KEY; // Session-specific API key, used for operations within a session
+const personalAccessToken = process.env.WASENDER_PERSONAL_ACCESS_TOKEN; // Account-level token for session management
 const webhookSecret = process.env.WASENDER_WEBHOOK_SECRET; // Optional, for handling webhooks
+
+// At least one of apiKey or personalAccessToken must be provided.
+// - personalAccessToken is required for account-level session management (create, list, delete sessions).
+// - apiKey is required for operations on an already connected session (send messages, manage contacts/groups via that session).
 
 const retryOptions: RetryConfig = {
   enabled: true,
@@ -49,7 +54,8 @@ const retryOptions: RetryConfig = {
 };
 
 const wasender = createWasender(
-  apiKey,
+  apiKey, // Can be undefined if only doing session management with PAT
+  personalAccessToken, // Can be undefined if only using a session-specific apiKey
   undefined, // Default baseUrl "https://www.wasenderapi.com/api"
   undefined, // Default globalThis.fetch (or provide `customFetch`)
   retryOptions,
@@ -57,7 +63,7 @@ const wasender = createWasender(
 );
 
 console.log("Wasender SDK Initialized.");
-// Now you can use `wasender.send(...)` or `wasender.handleWebhookEvent(...)`
+// Now you can use `wasender.send(...)` (if apiKey is set), `wasender.getAllWhatsAppSessions()` (if personalAccessToken is set), etc.
 ```
 
 ### Sending Messages (Basic Usage)
@@ -81,8 +87,9 @@ import {
 } from "../src/wasender/messages"; // Adjust path
 
 async function sendDemoMessages() {
-  const apiKey = process.env.WASENDER_API_KEY!;
-  const wasender = createWasender(apiKey, undefined, undefined, {
+  const apiKey = process.env.WASENDER_API_KEY!; // Requires a session-specific API key
+  // For sending messages, personalAccessToken is not typically used directly by send().
+  const wasender = createWasender(apiKey, undefined, undefined, undefined, {
     enabled: true,
     maxRetries: 1,
   });

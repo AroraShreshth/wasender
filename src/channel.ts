@@ -3,7 +3,7 @@
  * Defines structures and type aliases for messages sent to WhatsApp Channels.
  */
 
-import { TextOnlyMessage, WasenderSendResult } from "./messages";
+import { TextOnlyMessage, WasenderSendResult } from "./messages.ts";
 
 /**
  * Represents a text message specifically for sending to a WhatsApp Channel.

@@ -3,7 +3,7 @@
  * Defines structures for WhatsApp session information, API requests/responses related to sessions.
  */
 
-import { RateLimitInfo, WasenderSuccessResponse } from "./messages";
+import { RateLimitInfo, WasenderSuccessResponse } from "./messages.ts";
 
 // ---------- Session Data Structures ----------
 

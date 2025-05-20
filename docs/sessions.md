@@ -7,12 +7,13 @@ This document provides comprehensive examples for managing WhatsApp sessions usi
 ## Prerequisites
 
 1.  **Install Node.js and npm/yarn.**
-2.  **Obtain a Wasender API Key:** From [https://www.wasenderapi.com](https://www.wasenderapi.com). This API key is used to authorize your SDK calls.
-3.  **SDK Installation:** Ensure the Wasender SDK is correctly installed in your project.
+2.  **Obtain a Wasender Personal Access Token (PAT):** From your Wasender dashboard (Settings > Personal Access Token). This PAT is required for all session management operations like creating, listing, and deleting sessions.
+3.  **Obtain a Wasender API Key (Session-Specific):** From [https://www.wasenderapi.com](https://www.wasenderapi.com) after connecting a session. This key is used for operations _within_ an active session (e.g., sending messages via that session), not for general session management.
+4.  **SDK Installation:** Ensure the Wasender SDK is correctly installed in your project.
 
 ## Initializing the SDK
 
-All examples assume SDK initialization as shown below. Adjust paths to your SDK files accordingly.
+All examples assume SDK initialization as shown below. Adjust paths to your SDK files accordingly. Session management operations primarily use the Personal Access Token.
 
 ```typescript
 // session-examples-setup.ts
@@ -35,15 +36,21 @@ import {
   // WhatsAppSessionStatus // Type for status strings
 } from "path-to-your-sdk/sessions"; // Adjust path
 
-const apiKey = process.env.WASENDER_API_KEY;
+const personalAccessToken = process.env.WASENDER_PERSONAL_ACCESS_TOKEN;
+const apiKey = process.env.WASENDER_API_KEY; // Session-specific key, optional for these examples unless mixing operations
 
-if (!apiKey) {
-  console.error("Error: WASENDER_API_KEY environment variable is not set.");
+if (!personalAccessToken) {
+  console.error(
+    "Error: WASENDER_PERSONAL_ACCESS_TOKEN environment variable is not set. This is required for session management."
+  );
   process.exit(1);
 }
 
-const wasender = createWasender(apiKey);
-console.log("Wasender SDK Initialized for Session Management examples.");
+// For session management, personalAccessToken is primary. apiKey can be undefined or an empty string if not used for other types of calls.
+const wasender = createWasender(apiKey, personalAccessToken);
+console.log(
+  "Wasender SDK Initialized for Session Management examples using Personal Access Token."
+);
 
 // Placeholder for a session ID - replace with an actual ID from your tests
 let activeTestSessionId: number | null = null;
@@ -96,13 +103,13 @@ async function runAllSessionExamples() {
 // runAllSessionExamples(); // Uncomment to run the orchestrated examples
 ```
 
-**Note:** Replace path placeholders. Ensure `WASENDER_API_KEY` is set. The `runAllSessionExamples` function provides a way to test operations in sequence; uncomment and modify it for your testing.
+**Note:** Replace path placeholders. Ensure `WASENDER_PERSONAL_ACCESS_TOKEN` is set. The `WASENDER_API_KEY` is optional for these session management examples if you're not performing operations that require a specific active session key.
 
 ## Session Management Operations
 
 ### 1. Get All WhatsApp Sessions
 
-Retrieves a list of all WhatsApp sessions linked to your API key.
+Retrieves a list of all WhatsApp sessions linked to your account (authenticated via Personal Access Token).
 
 ```typescript
 async function fetchAllSessions() {
@@ -132,7 +139,7 @@ async function fetchAllSessions() {
 
 ### 2. Create WhatsApp Session
 
-Creates a new WhatsApp session.
+Creates a new WhatsApp session under your account (authenticated via Personal Access Token).
 
 ```typescript
 async function createNewSession() {
@@ -165,7 +172,7 @@ async function createNewSession() {
 
 ### 3. Get WhatsApp Session Details
 
-Retrieves details for a specific session by its ID.
+Retrieves details for a specific session by its ID (authenticated via Personal Access Token).
 
 ```typescript
 async function fetchSessionDetails(sessionId: number) {
@@ -187,7 +194,7 @@ async function fetchSessionDetails(sessionId: number) {
 
 ### 4. Update WhatsApp Session
 
-Updates details for an existing session.
+Updates details for an existing session (authenticated via Personal Access Token).
 
 ```typescript
 async function updateExistingSession(sessionId: number) {
@@ -214,7 +221,7 @@ async function updateExistingSession(sessionId: number) {
 
 ### 5. Connect WhatsApp Session (Get QR Code)
 
-Initiates the connection process. If a QR code is needed for scanning, it will be returned.
+Initiates the connection process (authenticated via Personal Access Token).
 
 ```typescript
 async function connectSession(sessionId: number) {
@@ -254,7 +261,7 @@ async function connectSession(sessionId: number) {
 
 ### 6. Get WhatsApp Session QR Code (Alternative)
 
-Explicitly retrieves the QR code if the session is in a state requiring one (e.g., `NEED_SCAN`).
+Explicitly retrieves the QR code if the session is in a state requiring one (authenticated via Personal Access Token).
 
 ```typescript
 async function fetchSessionQrCode(sessionId: number) {
@@ -280,7 +287,7 @@ async function fetchSessionQrCode(sessionId: number) {
 
 ### 7. Get WhatsApp Session Status (General)
 
-Retrieves the current status of the session linked to the API key used for SDK initialization (not for a specific session ID by parameter).
+Retrieves the current status of the WhatsApp service associated with your account (authenticated via Personal Access Token).
 
 ```typescript
 async function checkSessionStatus() {
@@ -304,10 +311,11 @@ async function checkSessionStatus() {
 - `NEED_SCAN`: The session needs to be scanned with a QR code.
 - `LOGGED_OUT`: The user has logged out of the WhatsApp session (e.g., from another device).
 - `EXPIRED`: The session is no longer valid, often due to extended inactivity.
+- `UNAUTHENTICATED`: The Personal Access Token is invalid or missing. (Added based on recent changes)
 
 ### 8. Disconnect WhatsApp Session
 
-Disconnects an active session by its ID.
+Disconnects an active session by its ID (authenticated via Personal Access Token).
 
 ```typescript
 async function disconnectSpecificSession(sessionId: number) {
@@ -329,7 +337,7 @@ async function disconnectSpecificSession(sessionId: number) {
 
 ### 9. Regenerate API Key
 
-Regenerates the API key for a specific session. **Use with extreme caution as this invalidates the previous API key for that session.**
+Regenerates the session-specific API key for a specific session (authenticated via Personal Access Token).
 
 ```typescript
 async function regenerateKeyForSession(sessionId: number) {
@@ -361,7 +369,7 @@ async function regenerateKeyForSession(sessionId: number) {
 
 ### 10. Delete WhatsApp Session
 
-Deletes a specific session by its ID. **This action is irreversible.**
+Deletes a specific session by its ID (authenticated via Personal Access Token). **This action is irreversible.**
 
 ```typescript
 async function deleteSpecificSession(sessionId: number) {
@@ -386,9 +394,10 @@ async function deleteSpecificSession(sessionId: number) {
 ## Running the Examples
 
 1.  Ensure the setup code (like `session-examples-setup.ts` content) is at the top of your test file or imported.
-2.  Correctly set the `WASENDER_API_KEY` environment variable.
-3.  Replace placeholder values like phone numbers for session creation with actual, unique test data.
-4.  You can call functions individually (e.g., `fetchAllSessions().then(() => createNewSession());`) or use/modify the `runAllSessionExamples()` orchestrator.
-5.  Execute your TypeScript file (e.g., using `ts-node your-session-test-file.ts`).
+2.  Correctly set the `WASENDER_PERSONAL_ACCESS_TOKEN` environment variable.
+3.  The `WASENDER_API_KEY` environment variable is optional for these examples unless you intend to mix in operations requiring a specific active session's key.
+4.  Replace placeholder values like phone numbers for session creation with actual, unique test data.
+5.  You can call functions individually (e.g., `fetchAllSessions().then(() => createNewSession());`) or use/modify the `runAllSessionExamples()` orchestrator.
+6.  Execute your TypeScript file (e.g., using `ts-node your-session-test-file.ts`).
 
 Start with read-only operations like `fetchAllSessions` and `checkSessionStatus` before attempting creation, connection, and especially destructive operations like `regenerateApiKey` or `deleteSpecificSession`.

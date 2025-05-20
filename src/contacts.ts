@@ -3,8 +3,8 @@
  * Defines structures for contact information, API responses related to contacts.
  */
 
-import { RateLimitInfo } from "./messages"; // Assuming RateLimitInfo is in messages.ts
-import { WasenderSuccessResponse } from "./messages"; // Reusing generic success response
+import { RateLimitInfo } from "./messages.ts"; // Assuming RateLimitInfo is in messages.ts
+import { WasenderSuccessResponse } from "./messages.ts"; // Reusing generic success response
 
 // ---------- Contact Data Structures ----------
 

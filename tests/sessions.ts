@@ -30,6 +30,8 @@ import {
   GetSessionStatusResult,
 } from '../src/sessions';
 import { RateLimitInfo, WasenderSuccessResponse } from '../src/messages';
+import { createWasender, FetchImplementation } from '../src/main';
+import { WasenderAPIError } from '../src/errors';
 
 describe('Sessions tests', () => {
   it('should have tests', () => {
@@ -374,4 +376,140 @@ describe('Session Type Definitions', () => {
       expect(result.rateLimit.remaining).toBe(99);
     });
   });
+});
+
+// New tests for Personal Access Token
+describe('Session endpoints personal token tests', () => {
+  const apiKey = "sessionApiKey123"; // A session-specific API key
+  const personalAccessToken = "patSuperSecretToken456"; // A Personal Access Token
+
+  // Test account-scoped endpoints (should use personal token)
+  test('getAllWhatsAppSessions should use personalAccessToken as Bearer token', async () => {
+    const mockFetch = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      headers: new Headers(),
+      json: () => Promise.resolve({ success: true, data: [] })
+    }) as jest.MockedFunction<FetchImplementation>;
+
+    const testWasender = createWasender(apiKey, personalAccessToken, undefined, mockFetch);
+    await testWasender.getAllWhatsAppSessions();
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.stringContaining('/whatsapp-sessions'),
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          'Authorization': `Bearer ${personalAccessToken}`
+        })
+      })
+    );
+  });
+
+  // Test /status endpoint (should use personalAccessToken)
+  test('getSessionStatus should use personalAccessToken as Bearer token', async () => {
+    const mockFetch = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      headers: new Headers(),
+      json: () => Promise.resolve({ status: 'CONNECTED' })
+    }) as jest.MockedFunction<FetchImplementation>;
+
+    const testWasender = createWasender(apiKey, personalAccessToken, undefined, mockFetch);
+    await testWasender.getSessionStatus();
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.stringContaining('/status'),
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          'Authorization': `Bearer ${personalAccessToken}`
+        })
+      })
+    );
+  });
+
+  // Test error handling when personalAccessToken is missing for an account-scoped endpoint
+  test('getAllWhatsAppSessions should throw WasenderAPIError when personalAccessToken is missing', async () => {
+    // Initialize SDK without personalAccessToken (passing undefined for it)
+    const testWasender = createWasender(apiKey, undefined);
+
+    // We expect this to throw because the request method will find personalAccessToken to be undefined
+    // for an account-scoped path and throw an error before making a fetch call.
+    await expect(testWasender.getAllWhatsAppSessions()).rejects.toThrow(WasenderAPIError);
+    await expect(testWasender.getAllWhatsAppSessions()).rejects.toThrow(
+        "Personal Access Token is required for this operation but was not provided during SDK initialization."
+    );
+  });
+
+  // Test successful session creation with personalAccessToken
+  test('createWhatsAppSession should use personalAccessToken as Bearer token', async () => {
+    const mockFetch = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      headers: new Headers(),
+      json: () => Promise.resolve({
+        success: true,
+        data: {
+          id: 1,
+          name: 'Test Session',
+          status: 'DISCONNECTED'
+        }
+      })
+    }) as jest.MockedFunction<FetchImplementation>;
+
+    const testWasender = createWasender(apiKey, personalAccessToken, undefined, mockFetch);
+    const result = await testWasender.createWhatsAppSession({
+      name: 'Test Session',
+      phone_number: '+1234567890',
+      account_protection: true,
+      log_messages: true
+    });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.stringContaining('/whatsapp-sessions'), // Path for create is /whatsapp-sessions
+      expect.objectContaining({
+        method: 'POST', // Ensure it's a POST request
+        headers: expect.objectContaining({
+          'Authorization': `Bearer ${personalAccessToken}`
+        }),
+        body: JSON.stringify({
+          name: 'Test Session',
+          phone_number: '+1234567890',
+          account_protection: true,
+          log_messages: true
+        })
+      })
+    );
+    expect(result.response.success).toBe(true);
+  });
+
+  // Test that a non-session-management endpoint (e.g., getContacts) uses apiKey
+  test('getContacts should use apiKey as Bearer token when PAT is also present', async () => {
+    const mockFetch = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      headers: new Headers(),
+      json: () => Promise.resolve({ success: true, data: [] })
+    }) as jest.MockedFunction<FetchImplementation>;
+
+    const testWasender = createWasender(apiKey, personalAccessToken, undefined, mockFetch);
+    await testWasender.getContacts(); // Assuming getContacts is a method that uses apiKey
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.stringContaining('/contacts'),
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          'Authorization': `Bearer ${apiKey}`
+        })
+      })
+    );
+  });
+
+ test('getContacts should throw WasenderAPIError if only PAT is provided and apiKey is undefined', async () => {
+    const testWasender = createWasender(undefined, personalAccessToken);
+    await expect(testWasender.getContacts()).rejects.toThrow(WasenderAPIError);
+    await expect(testWasender.getContacts()).rejects.toThrow(
+        "Session API Key is required for this operation but was not provided or is not applicable."
+    );
+ });
+
 });
