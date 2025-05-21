@@ -37,7 +37,7 @@ const wasender = createWasender(apiKey);
 console.log("Wasender SDK Initialized for Contact Management examples.");
 
 // Placeholder for a contact\'s phone number - replace with a valid E.164 number
-const targetContactJid = "12345678901"; // Example: international format without '+'
+const targetContactId = "12345678901"; // Example: international format without '+'
 
 // Generic error handler for examples
 function handleApiError(error: unknown, operation: string) {
@@ -110,21 +110,21 @@ fetchAllContacts();
 
 ### 2. Get Specific Contact Information
 
-Retrieves detailed information for a specific contact using their JID (Phone Number).
+Retrieves detailed information for a specific contact using their ID (Phone Number).
 
 ```typescript
 // examples/get-contact-info.ts
 // (Assume contact-examples-setup.ts is imported or its content is available)
 
-async function fetchContactInfo(contactJid: string) {
-  console.log(`\n--- Fetching Info for Contact: ${contactJid} ---`);
-  if (!contactJid) {
-    console.error("Error: No target contact JID provided for fetching info.");
+async function fetchContactInfo(contactId: string) {
+  console.log(`\n--- Fetching Info for Contact: ${contactId} ---`);
+  if (!contactId) {
+    console.error("Error: No target contact ID provided for fetching info.");
     return;
   }
   try {
     const result: GetContactInfoResult = await wasender.getContactInfo(
-      contactJid
+      contactId
     );
     console.log(
       "Contact info retrieved:",
@@ -137,12 +137,12 @@ async function fetchContactInfo(contactJid: string) {
       result.rateLimit.getResetTimestampAsDate()?.toLocaleTimeString() || "N/A"
     );
   } catch (error) {
-    handleApiError(error, `fetching info for contact ${contactJid}`);
+    handleApiError(error, `fetching info for contact ${contactId}`);
   }
 }
 
-fetchContactInfo(targetContactJid);
-// fetchContactInfo("another_number_jid"); // Example for another contact
+fetchContactInfo(targetContactId);
+// fetchContactInfo("another_number_id"); // Example for another contact
 ```
 
 ### 3. Get Contact Profile Picture URL
@@ -153,19 +153,19 @@ Retrieves the URL of the profile picture for a specific contact.
 // examples/get-contact-picture.ts
 // (Assume contact-examples-setup.ts is imported or its content is available)
 
-async function fetchContactProfilePicture(contactJid: string) {
+async function fetchContactProfilePicture(contactId: string) {
   console.log(
-    `\n--- Fetching Profile Picture URL for Contact: ${contactJid} ---`
+    `\n--- Fetching Profile Picture URL for Contact: ${contactId} ---`
   );
-  if (!contactJid) {
+  if (!contactId) {
     console.error(
-      "Error: No target contact JID provided for fetching profile picture."
+      "Error: No target contact ID provided for fetching profile picture."
     );
     return;
   }
   try {
     const result: GetContactProfilePictureResult =
-      await wasender.getContactProfilePicture(contactJid);
+      await wasender.getContactProfilePicture(contactId);
     if (result.response.data.imgUrl) {
       console.log("Profile picture URL:", result.response.data.imgUrl);
     } else {
@@ -180,11 +180,11 @@ async function fetchContactProfilePicture(contactJid: string) {
       result.rateLimit.getResetTimestampAsDate()?.toLocaleTimeString() || "N/A"
     );
   } catch (error) {
-    handleApiError(error, `fetching profile picture for contact ${contactJid}`);
+    handleApiError(error, `fetching profile picture for contact ${contactId}`);
   }
 }
 
-fetchContactProfilePicture(targetContactJid);
+fetchContactProfilePicture(targetContactId);
 ```
 
 ### 4. Block a Contact
@@ -195,14 +195,14 @@ Blocks a specific contact.
 // examples/block-contact.ts
 // (Assume contact-examples-setup.ts is imported or its content is available)
 
-async function blockSpecificContact(contactJid: string) {
-  console.log(`\n--- Blocking Contact: ${contactJid} ---`);
-  if (!contactJid) {
-    console.error("Error: No target contact JID provided for blocking.");
+async function blockSpecificContact(contactId: string) {
+  console.log(`\n--- Blocking Contact: ${contactId} ---`);
+  if (!contactId) {
+    console.error("Error: No target contact ID provided for blocking.");
     return;
   }
   try {
-    const result: ContactActionResult = await wasender.blockContact(contactJid);
+    const result: ContactActionResult = await wasender.blockContact(contactId);
     console.log("Block operation successful:", result.response.data.message);
     console.log(
       "Rate Limit Info: Remaining =",
@@ -211,11 +211,11 @@ async function blockSpecificContact(contactJid: string) {
       result.rateLimit.getResetTimestampAsDate()?.toLocaleTimeString() || "N/A"
     );
   } catch (error) {
-    handleApiError(error, `blocking contact ${contactJid}`);
+    handleApiError(error, `blocking contact ${contactId}`);
   }
 }
 
-// blockSpecificContact(targetContactJid); // Uncomment to run - CAUTION: This will block the contact.
+// blockSpecificContact(targetContactId); // Uncomment to run - CAUTION: This will block the contact.
 ```
 
 ### 5. Unblock a Contact
@@ -226,15 +226,15 @@ Unblocks a specific contact.
 // examples/unblock-contact.ts
 // (Assume contact-examples-setup.ts is imported or its content is available)
 
-async function unblockSpecificContact(contactJid: string) {
-  console.log(`\n--- Unblocking Contact: ${contactJid} ---`);
-  if (!contactJid) {
-    console.error("Error: No target contact JID provided for unblocking.");
+async function unblockSpecificContact(contactId: string) {
+  console.log(`\n--- Unblocking Contact: ${contactId} ---`);
+  if (!contactId) {
+    console.error("Error: No target contact ID provided for unblocking.");
     return;
   }
   try {
     const result: ContactActionResult = await wasender.unblockContact(
-      contactJid
+      contactId
     );
     console.log("Unblock operation successful:", result.response.data.message);
     console.log(
@@ -244,16 +244,16 @@ async function unblockSpecificContact(contactJid: string) {
       result.rateLimit.getResetTimestampAsDate()?.toLocaleTimeString() || "N/A"
     );
   } catch (error) {
-    handleApiError(error, `unblocking contact ${contactJid}`);
+    handleApiError(error, `unblocking contact ${contactId}`);
   }
 }
 
-// unblockSpecificContact(targetContactJid); // Uncomment to run
+// unblockSpecificContact(targetContactId); // Uncomment to run
 ```
 
-## Important Notes on Contact JIDs
+## Important Notes on Contact IDs
 
-- The API documentation often refers to `contactPhoneNumber` as the JID (Jabber ID) in E.164 format. However, for some WhatsApp internal JIDs (like groups or channels), the format might differ (e.g., `number@g.us` or `number@newsletter`).
-- For individual contacts, ensure you are using the phone number part of their JID, typically without the `+` sign or `@s.whatsapp.net` suffix, as per the API\'s expectation for `contactPhoneNumber` path parameters (e.g., `12345678901`). Always refer to the specific API documentation for the exact format required by each endpoint if issues arise.
+- The API documentation often refers to `contactPhoneNumber` as the ID (Jabber ID) in E.164 format. However, for some WhatsApp internal IDs (like groups or channels), the format might differ (e.g., `number@g.us` or `number@newsletter`).
+- For individual contacts, ensure you are using the phone number part of their ID, typically without the `+` sign or `@s.whatsapp.net` suffix, as per the API\'s expectation for `contactPhoneNumber` path parameters (e.g., `12345678901`). Always refer to the specific API documentation for the exact format required by each endpoint if issues arise.
 
-This guide provides a solid foundation for using the contact management features of the Wasender SDK. Remember to replace placeholder JIDs and handle API keys securely.
+This guide provides a solid foundation for using the contact management features of the Wasender SDK. Remember to replace placeholder IDs and handle API keys securely.

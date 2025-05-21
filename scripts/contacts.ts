@@ -21,15 +21,15 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function runAllContactExamples() {
   const apiKey = process.env.WASENDER_API_KEY;
-  const testContactJid = process.env.WASENDER_TEST_CONTACT_JID; // e.g., 12345678901 (without + or @c.us for path params)
+  const testContactId = process.env.WASENDER_TEST_CONTACT_ID; // e.g., 12345678901 (without + or @c.us for path params)
 
   if (!apiKey) {
     console.error("Error: WASENDER_API_KEY environment variable is not set.");
     process.exit(1);
   }
 
-  if (!testContactJid) {
-    console.error("Error: WASENDER_TEST_CONTACT_JID environment variable is not set (e.g., 12345678901).");
+  if (!testContactId) {
+    console.error("Error: WASENDER_TEST_CONTACT_ID environment variable is not set (e.g., 12345678901).");
     process.exit(1);
   }
 
@@ -114,14 +114,14 @@ async function runAllContactExamples() {
     }
   }
 
-  async function fetchContactInfo(contactJid: string) {
-    console.log(`\n--- Fetching Info for Contact: ${contactJid} ---`);
-    if (!contactJid) {
-      console.error("Error: No target contact JID provided for fetching info.");
+  async function fetchContactInfo(contactId: string) {
+    console.log(`\n--- Fetching Info for Contact: ${contactId} ---`);
+    if (!contactId) {
+      console.error("Error: No target contact ID provided for fetching info.");
       return;
     }
     try {
-      const result = await wasender.getContactInfo(contactJid);
+      const result = await wasender.getContactInfo(contactId);
       console.log(
         "Contact info retrieved:",
         JSON.stringify(result.response.data, null, 2)
@@ -137,22 +137,22 @@ async function runAllContactExamples() {
         rateLimitResetTime
       );
     } catch (error) {
-      handleContactApiError(error, `fetching info for contact ${contactJid}`);
+      handleContactApiError(error, `fetching info for contact ${contactId}`);
     }
   }
 
-  async function fetchContactProfilePicture(contactJid: string) {
+  async function fetchContactProfilePicture(contactId: string) {
     console.log(
-      `\n--- Fetching Profile Picture URL for Contact: ${contactJid} ---`
+      `\n--- Fetching Profile Picture URL for Contact: ${contactId} ---`
     );
-    if (!contactJid) {
+    if (!contactId) {
       console.error(
-        "Error: No target contact JID provided for fetching profile picture."
+        "Error: No target contact ID provided for fetching profile picture."
       );
       return;
     }
     try {
-      const result = await wasender.getContactProfilePicture(contactJid);
+      const result = await wasender.getContactProfilePicture(contactId);
       if (result.response.data.imgUrl) {
         console.log("Profile picture URL:", result.response.data.imgUrl);
       } else {
@@ -171,19 +171,19 @@ async function runAllContactExamples() {
         rateLimitResetTime
       );
     } catch (error) {
-      handleContactApiError(error, `fetching profile picture for contact ${contactJid}`);
+      handleContactApiError(error, `fetching profile picture for contact ${contactId}`);
     }
   }
 
-  async function blockSpecificContact(contactJid: string) {
-    console.log(`\n--- Blocking Contact: ${contactJid} ---`);
+  async function blockSpecificContact(contactId: string) {
+    console.log(`\n--- Blocking Contact: ${contactId} ---`);
     console.warn("CAUTION: This is a contact modifying operation.");
-    if (!contactJid) {
-      console.error("Error: No target contact JID provided for blocking.");
+    if (!contactId) {
+      console.error("Error: No target contact ID provided for blocking.");
       return;
     }
     try {
-      const result = await wasender.blockContact(contactJid);
+      const result = await wasender.blockContact(contactId);
       console.log("Block operation successful:", result.response.data.message);
       let rateLimitResetTime = "N/A";
       if (result.rateLimit && result.rateLimit.getResetTimestampAsDate) {
@@ -196,19 +196,19 @@ async function runAllContactExamples() {
         rateLimitResetTime
       );
     } catch (error) {
-      handleContactApiError(error, `blocking contact ${contactJid}`);
+      handleContactApiError(error, `blocking contact ${contactId}`);
     }
   }
 
-  async function unblockSpecificContact(contactJid: string) {
-    console.log(`\n--- Unblocking Contact: ${contactJid} ---`);
+  async function unblockSpecificContact(contactId: string) {
+    console.log(`\n--- Unblocking Contact: ${contactId} ---`);
     console.warn("CAUTION: This is a contact modifying operation.");
-    if (!contactJid) {
-      console.error("Error: No target contact JID provided for unblocking.");
+    if (!contactId) {
+      console.error("Error: No target contact ID provided for unblocking.");
       return;
     }
     try {
-      const result = await wasender.unblockContact(contactJid);
+      const result = await wasender.unblockContact(contactId);
       console.log("Unblock operation successful:", result.response.data.message);
       let rateLimitResetTime = "N/A";
       if (result.rateLimit && result.rateLimit.getResetTimestampAsDate) {
@@ -221,7 +221,7 @@ async function runAllContactExamples() {
         rateLimitResetTime
       );
     } catch (error) {
-      handleContactApiError(error, `unblocking contact ${contactJid}`);
+      handleContactApiError(error, `unblocking contact ${contactId}`);
     }
   }
   // --- Contact Operation Examples End ---
@@ -231,17 +231,17 @@ async function runAllContactExamples() {
   await fetchAllContacts();
   await delay(OPERATION_DELAY);
 
-//   await fetchContactInfo(testContactJid);
-//   await delay(OPERATION_DELAY);
+  await fetchContactInfo(testContactId);
+  await delay(OPERATION_DELAY);
 
-//   await fetchContactProfilePicture(testContactJid);
-//   await delay(OPERATION_DELAY);
+  await fetchContactProfilePicture(testContactId);
+  await delay(OPERATION_DELAY);
 
-  // CAUTION: Modifying operations. Uncomment to test. Ensure JID is correct.
+  // CAUTION: Modifying operations. Uncomment to test. Ensure ID is correct.
   console.log("\nSKIPPING modifying contact operations (block/unblock) by default. Uncomment in script to run.");
-  // await blockSpecificContact(testContactJid);
+  // await blockSpecificContact(testContactId);
   // await delay(OPERATION_DELAY);
-  // await unblockSpecificContact(testContactJid); // Make sure to unblock if you block for testing
+  // await unblockSpecificContact(testContactId); // Make sure to unblock if you block for testing
   // await delay(OPERATION_DELAY);
 
   console.log("\nAll contact examples processed.");

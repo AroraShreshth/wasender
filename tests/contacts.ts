@@ -20,7 +20,7 @@ describe('Contact Type Definitions', () => {
   };
 
   const mockContact: Contact = {
-    jid: '1234567890',
+    id: '1234567890',
     name: 'Contact Name',
     notify: 'Contact Display Name',
     verifiedName: 'Verified Business Name',
@@ -31,7 +31,7 @@ describe('Contact Type Definitions', () => {
   describe('Core Data Structures', () => {
     it('Contact type should be correct (all fields)', () => {
       const contact: Contact = { ...mockContact, exists: true };
-      expect(contact.jid).toBe('1234567890');
+      expect(contact.id).toBe('1234567890');
       expect(contact.name).toBe('Contact Name');
       expect(contact.notify).toBe('Contact Display Name');
       expect(contact.verifiedName).toBe('Verified Business Name');
@@ -42,9 +42,9 @@ describe('Contact Type Definitions', () => {
 
     it('Contact type should allow optional fields to be undefined', () => {
       const minimalContact: Contact = {
-        jid: '0987654321',
+        id: '0987654321',
       };
-      expect(minimalContact.jid).toBe('0987654321');
+      expect(minimalContact.id).toBe('0987654321');
       expect(minimalContact.name).toBeUndefined();
       expect(minimalContact.notify).toBeUndefined();
       expect(minimalContact.verifiedName).toBeUndefined();
@@ -59,12 +59,12 @@ describe('Contact Type Definitions', () => {
       const response: GetAllContactsResponse = {
         success: true,
         message: 'Contacts retrieved successfully',
-        data: [mockContact, { ...mockContact, jid: '1122334455', name: 'Another Contact' }],
+        data: [mockContact, { ...mockContact, id: '1122334455', name: 'Another Contact' }],
       };
       expect(response.success).toBe(true);
       expect(response.message).toBe('Contacts retrieved successfully');
       expect(response.data.length).toBe(2);
-      expect(response.data[0].jid).toBe('1234567890');
+      expect(response.data[0].id).toBe('1234567890');
       expect(response.data[1].name).toBe('Another Contact');
     });
 
@@ -76,7 +76,7 @@ describe('Contact Type Definitions', () => {
       };
       expect(response.success).toBe(true);
       expect(response.message).toBe('Contact info retrieved');
-      expect(response.data.jid).toBe('1234567890');
+      expect(response.data.id).toBe('1234567890');
       expect(response.data.exists).toBe(true);
     });
 
@@ -158,7 +158,7 @@ describe('Contact Type Definitions', () => {
         },
         rateLimit: mockRateLimitInfo,
       };
-      expect(result.response.data.jid).toBe('1234567890');
+      expect(result.response.data.id).toBe('1234567890');
       expect(result.response.data.exists).toBe(false);
       expect(result.rateLimit).toBeDefined();
       if (result.rateLimit) {

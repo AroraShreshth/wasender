@@ -9,8 +9,8 @@ import { WasenderSuccessResponse } from "./messages.ts"; // Reusing generic succ
 // ---------- Contact Data Structures ----------
 
 export interface Contact {
-  /** The JID (Jabber ID) of the contact, typically a phone number. */
-  jid: string;
+  /** The id (Jabber ID) of the contact, typically a phone number. */
+  id: string;
   /** The name of the contact as saved by the user. */
   name?: string; // WhatsApp might not always provide this
   /** The display name of the contact (push name). */
@@ -22,7 +22,7 @@ export interface Contact {
   /** The contact\'s status message. */
   status?: string;
   /** Indicates if the contact exists on WhatsApp. */
-  exists?: boolean; // Primarily for GetContactInfoResponse
+  exists?: boolean; 
 }
 
 // ---------- API Response Types for Contacts ----------
