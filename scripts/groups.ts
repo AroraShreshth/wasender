@@ -31,15 +31,15 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function runAllGroupExamples() {
   const apiKey = process.env.WASENDER_API_KEY;
-  const testGroupJid = process.env.WASENDER_TEST_GROUP_JID;
+  const testGroupId = process.env.WASENDER_TEST_GROUP_ID;
 
   if (!apiKey) {
     console.error("Error: WASENDER_API_KEY environment variable is not set.");
     process.exit(1);
   }
 
-  if (!testGroupJid) {
-    console.error("Error: WASENDER_TEST_GROUP_JID environment variable is not set.");
+  if (!testGroupId) {
+    console.error("Error: WASENDER_TEST_GROUP_ID environment variable is not set.");
     process.exit(1);
   }
 
@@ -114,9 +114,9 @@ async function runAllGroupExamples() {
         });
         console.log("\n--- End of All Group Data ---");
 
-        // You might want to find your specific testGroupJid here to verify it exists
-        const testGroupExists = groups.some(group => group.jid === testGroupJid);
-        console.log(`\nTest group ${testGroupJid} found in list: ${testGroupExists}`);
+        // You might want to find your specific testGroupId here to verify it exists
+        const testGroupExists = groups.some(group => group.id === testGroupId);
+        console.log(`\nTest group ${testGroupId} found in list: ${testGroupExists}`);
       }
 
       let rateLimitResetTime = "N/A";
@@ -137,17 +137,17 @@ async function runAllGroupExamples() {
   // Generic message sender to group
   async function sendMessageToGroup(
     description: string,
-    groupJid: string,
+    groupId: string,
     payload: WasenderMessagePayload,
     instance?: Wasender // Optional instance, defaults to wasenderWithRetries for messages
   ) {
-    console.log(`\n--- ${description} to Group: ${groupJid} ---`);
-    if (!groupJid) return console.error("Group JID is required for sending messages.");
+    console.log(`\n--- ${description} to Group: ${groupId} ---`);
+    if (!groupId) return console.error("Group ID is required for sending messages.");
     
     const senderInstance = instance || wasenderWithRetries;
     try {
-      // Ensure the payload's 'to' field is set to the groupJid
-      const messagePayload = { ...payload, to: groupJid };
+      // Ensure the payload's 'to' field is set to the groupId
+      const messagePayload = { ...payload, to: groupId };
       const result = await senderInstance.send(messagePayload);
       console.log("Message Sent Successfully to group:", result.response.message);
       let rateLimitResetTime = "N/A";
@@ -161,87 +161,87 @@ async function runAllGroupExamples() {
         rateLimitResetTime
       );
     } catch (error) {
-      handleGroupApiError(error, `${description} to group ${groupJid}`);
+      handleGroupApiError(error, `${description} to group ${groupId}`);
     }
   }
 
   // Functions to send specific message types to the group
-  async function sendTextToGroup(groupJid: string) {
+  async function sendTextToGroup(groupId: string) {
     const textPayload: Omit<TextOnlyMessage, 'to'> = { // 'to' will be set by sendMessageToGroup
       messageType: "text",
       text: "Hello group from Wasender SDK (groups.ts script)!",
     };
-    await sendMessageToGroup("Sending Text Message", groupJid, textPayload as WasenderMessagePayload);
+    await sendMessageToGroup("Sending Text Message", groupId, textPayload as WasenderMessagePayload);
   }
 
-  async function sendImageToGroup(groupJid: string) {
+  async function sendImageToGroup(groupId: string) {
     const imagePayload: Omit<ImageUrlMessage, 'to'> = {
       messageType: "image",
       imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/%D0%92%D0%B5%D0%B4%D0%BC%D1%96%D0%B4%D1%8C_%D1%83_%D0%BB%D1%96%D1%81%D1%96.jpg/1599px-%D0%92%D0%B5%D0%B4%D0%BC%D1%96%D0%B4%D1%8C_%D1%83_%D0%BB%D1%96%D1%81%D1%96.jpg?20190515112011",
       text: "Cool image for the group!",
     };
-    await sendMessageToGroup("Sending Image Message", groupJid, imagePayload as WasenderMessagePayload);
+    await sendMessageToGroup("Sending Image Message", groupId, imagePayload as WasenderMessagePayload);
   }
   
-  async function sendVideoToGroup(groupJid: string) {
+  async function sendVideoToGroup(groupId: string) {
     const videoPayload: Omit<VideoUrlMessage, 'to'> = {
         messageType: "video",
         videoUrl: "https://samplelib.com/lib/preview/mp4/sample-5s.mp4",
         text: "Group video!",
     };
-    await sendMessageToGroup("Sending Video Message", groupJid, videoPayload as WasenderMessagePayload);
+    await sendMessageToGroup("Sending Video Message", groupId, videoPayload as WasenderMessagePayload);
   }
 
-  async function sendDocumentToGroup(groupJid: string) {
+  async function sendDocumentToGroup(groupId: string) {
     const documentPayload: Omit<DocumentUrlMessage, 'to'> = {
         messageType: "document",
         documentUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
         text: "Important group document.",
     };
-    await sendMessageToGroup("Sending Document Message", groupJid, documentPayload as WasenderMessagePayload);
+    await sendMessageToGroup("Sending Document Message", groupId, documentPayload as WasenderMessagePayload);
   }
 
-  async function sendAudioToGroup(groupJid: string) {
+  async function sendAudioToGroup(groupId: string) {
     const audioPayload: Omit<AudioUrlMessage, 'to'> = {
         messageType: "audio",
         audioUrl: "https://file-examples.com/storage/fe15fd9e66682b77ba42822/2017/11/file_example_MP3_700KB.mp3",
     };
-    await sendMessageToGroup("Sending Audio Message", groupJid, audioPayload as WasenderMessagePayload);
+    await sendMessageToGroup("Sending Audio Message", groupId, audioPayload as WasenderMessagePayload);
   }
 
-  async function sendStickerToGroup(groupJid: string) {
+  async function sendStickerToGroup(groupId: string) {
     const stickerPayload: Omit<StickerUrlMessage, 'to'> = {
         messageType: "sticker",
         stickerUrl: "https://www.gstatic.com/webp/gallery/1.sm.webp",
     };
-    await sendMessageToGroup("Sending Sticker Message", groupJid, stickerPayload as WasenderMessagePayload);
+    await sendMessageToGroup("Sending Sticker Message", groupId, stickerPayload as WasenderMessagePayload);
   }
 
-  async function sendContactToGroup(groupJid: string) {
+  async function sendContactToGroup(groupId: string) {
     const contactPayload: Omit<ContactCardMessage, 'to'> = {
         messageType: "contact",
         contact: { name: "Shared Contact", phone: "+12345098765" },
         text: "Group contact share.",
     };
-    await sendMessageToGroup("Sending Contact Message", groupJid, contactPayload as WasenderMessagePayload);
+    await sendMessageToGroup("Sending Contact Message", groupId, contactPayload as WasenderMessagePayload);
   }
 
-  async function sendLocationToGroup(groupJid: string) {
+  async function sendLocationToGroup(groupId: string) {
     const locationPayload: Omit<LocationPinMessage, 'to'> = {
         messageType: "location",
         location: { latitude: 40.7128, longitude: -74.0060, name: "NYC for Group" }, // New York City
         text: "Group meetup location!",
     };
-    await sendMessageToGroup("Sending Location Message", groupJid, locationPayload as WasenderMessagePayload);
+    await sendMessageToGroup("Sending Location Message", groupId, locationPayload as WasenderMessagePayload);
   }
 
 
-  async function fetchGroupMetadata(groupJid: string) {
-    console.log(`\n--- Fetching Metadata for Group: ${groupJid} ---`);
-    if (!groupJid) return console.error("Group JID is required.");
+  async function fetchGroupMetadata(groupId: string) {
+    console.log(`\n--- Fetching Metadata for Group: ${groupId} ---`);
+    if (!groupId) return console.error("Group ID is required.");
 
     try {
-      const result = await wasender.getGroupMetadata(groupJid);
+      const result = await wasender.getGroupMetadata(groupId);
       console.log(
         "Group metadata:",
         JSON.stringify(result.response.data, null, 2)
@@ -257,16 +257,16 @@ async function runAllGroupExamples() {
         rateLimitResetTime
       );
     } catch (error) {
-      handleGroupApiError(error, `fetching metadata for group ${groupJid}`);
+      handleGroupApiError(error, `fetching metadata for group ${groupId}`);
     }
   }
 
-  async function fetchGroupParticipants(groupJid: string) {
-    console.log(`\n--- Fetching Participants for Group: ${groupJid} ---`);
-    if (!groupJid) return console.error("Group JID is required.");
+  async function fetchGroupParticipants(groupId: string) {
+    console.log(`\n--- Fetching Participants for Group: ${groupId} ---`);
+    if (!groupId) return console.error("Group ID is required.");
 
     try {
-      const result = await wasender.getGroupParticipants(groupJid);
+      const result = await wasender.getGroupParticipants(groupId);
       console.log(
         "Group participants retrieved:",
         result.response.data.length,
@@ -289,21 +289,21 @@ async function runAllGroupExamples() {
         rateLimitResetTime
       );
     } catch (error) {
-      handleGroupApiError(error, `fetching participants for group ${groupJid}`);
+      handleGroupApiError(error, `fetching participants for group ${groupId}`);
     }
   }
 
   async function addParticipantsToGroup(
-    groupJid: string,
+    groupId: string,
     participantsToAdd: string[]
   ) {
-    console.log(`\n--- Adding Participants to Group: ${groupJid} ---`);
+    console.log(`\n--- Adding Participants to Group: ${groupId} ---`);
     console.warn("CAUTION: This is a group modifying operation.");
-    if (!groupJid || !participantsToAdd || participantsToAdd.length === 0) {
-      return console.error("Group JID and participants list are required.");
+    if (!groupId || !participantsToAdd || participantsToAdd.length === 0) {
+      return console.error("Group ID and participants list are required.");
     }
     try {
-      const result = await wasender.addGroupParticipants(groupJid, participantsToAdd);
+      const result = await wasender.addGroupParticipants(groupId, participantsToAdd);
       console.log(
         "Add participants result:",
         JSON.stringify(result.response.data, null, 2)
@@ -319,21 +319,21 @@ async function runAllGroupExamples() {
         rateLimitResetTime
       );
     } catch (error) {
-      handleGroupApiError(error, `adding participants to group ${groupJid}`);
+      handleGroupApiError(error, `adding participants to group ${groupId}`);
     }
   }
 
   async function removeParticipantsFromGroup(
-    groupJid: string,
+    groupId: string,
     participantsToRemove: string[]
   ) {
-    console.log(`\n--- Removing Participants from Group: ${groupJid} ---`);
+    console.log(`\n--- Removing Participants from Group: ${groupId} ---`);
     console.warn("CAUTION: This is a group modifying operation.");
-    if (!groupJid || !participantsToRemove || participantsToRemove.length === 0) {
-      return console.error("Group JID and participants list are required.");
+    if (!groupId || !participantsToRemove || participantsToRemove.length === 0) {
+      return console.error("Group ID and participants list are required.");
     }
     try {
-      const result = await wasender.removeGroupParticipants(groupJid, participantsToRemove);
+      const result = await wasender.removeGroupParticipants(groupId, participantsToRemove);
       console.log(
         "Remove participants result:",
         JSON.stringify(result.response.data, null, 2)
@@ -349,14 +349,14 @@ async function runAllGroupExamples() {
         rateLimitResetTime
       );
     } catch (error) {
-      handleGroupApiError(error, `removing participants from group ${groupJid}`);
+      handleGroupApiError(error, `removing participants from group ${groupId}`);
     }
   }
 
-  async function updateSampleGroupSettings(groupJid: string) {
-    console.log(`\n--- Updating Settings for Group: ${groupJid} ---`);
+  async function updateSampleGroupSettings(groupId: string) {
+    console.log(`\n--- Updating Settings for Group: ${groupId} ---`);
     console.warn("CAUTION: This is a group modifying operation.");
-    if (!groupJid) return console.error("Group JID is required.");
+    if (!groupId) return console.error("Group ID is required.");
 
     const settingsToUpdate: UpdateGroupSettingsPayload = {
       subject: "Awesome Group Name via SDK Test",
@@ -366,7 +366,7 @@ async function runAllGroupExamples() {
     };
 
     try {
-      const result = await wasender.updateGroupSettings(groupJid, settingsToUpdate);
+      const result = await wasender.updateGroupSettings(groupId, settingsToUpdate);
       console.log(
         "Update group settings result:",
         JSON.stringify(result.response.data, null, 2)
@@ -382,7 +382,7 @@ async function runAllGroupExamples() {
         rateLimitResetTime
       );
     } catch (error) {
-      handleGroupApiError(error, `updating settings for group ${groupJid}`);
+      handleGroupApiError(error, `updating settings for group ${groupId}`);
     }
   }
 
@@ -393,43 +393,43 @@ async function runAllGroupExamples() {
   await fetchAllGroups();
   await delay(MESSAGE_SEND_DELAY);
 
-  await sendTextToGroup(testGroupJid);
+  await sendTextToGroup(testGroupId);
   await delay(MESSAGE_SEND_DELAY);
 
-  await sendImageToGroup(testGroupJid);
+  await sendImageToGroup(testGroupId);
   await delay(MESSAGE_SEND_DELAY);
 
-  await sendVideoToGroup(testGroupJid);
+  await sendVideoToGroup(testGroupId);
   await delay(MESSAGE_SEND_DELAY);
 
-  await sendDocumentToGroup(testGroupJid);
+  await sendDocumentToGroup(testGroupId);
   await delay(MESSAGE_SEND_DELAY);
 
-  await sendAudioToGroup(testGroupJid);
+  await sendAudioToGroup(testGroupId);
   await delay(MESSAGE_SEND_DELAY);
 
-  await sendStickerToGroup(testGroupJid);
+  await sendStickerToGroup(testGroupId);
   await delay(MESSAGE_SEND_DELAY);
   
-  await sendContactToGroup(testGroupJid);
+  await sendContactToGroup(testGroupId);
   await delay(MESSAGE_SEND_DELAY);
 
-  await sendLocationToGroup(testGroupJid);
+  await sendLocationToGroup(testGroupId);
   await delay(MESSAGE_SEND_DELAY);
 
-  await fetchGroupMetadata(testGroupJid);
+  await fetchGroupMetadata(testGroupId);
   await delay(MESSAGE_SEND_DELAY);
 
-  await fetchGroupParticipants(testGroupJid);
+  await fetchGroupParticipants(testGroupId);
   await delay(MESSAGE_SEND_DELAY);
 
-//   CAUTION: Modifying operations. Uncomment to test. Ensure JIDs are correct.
+//   CAUTION: Modifying operations. Uncomment to test. Ensure IDs are correct.
 //   console.log("\nSKIPPING modifying operations by default. Uncomment in script to run.");
-//   await addParticipantsToGroup(testGroupJid, participantJidsToAdd);
+//   await addParticipantsToGroup(testGroupId, participantJidsToAdd);
 //   await delay(MESSAGE_SEND_DELAY);
-//   await removeParticipantsFromGroup(testGroupJid, participantJidsToRemove);
+//   await removeParticipantsFromGroup(testGroupId, participantJidsToRemove);
 //   await delay(MESSAGE_SEND_DELAY);
-//   await updateSampleGroupSettings(testGroupJid);
+//   await updateSampleGroupSettings(testGroupId);
 //   await delay(MESSAGE_SEND_DELAY);
 
   console.log("\nAll group examples processed.");

@@ -171,14 +171,14 @@ async function getMyGroups() {
     if (result.response.data.length > 0) {
       const firstGroup = result.response.data[0];
       console.log(
-        "First group JID:",
-        firstGroup.jid,
+        "First group ID:",
+        firstGroup.id,
         "Subject:",
         firstGroup.subject
       );
 
       // Example: Get metadata for the first group
-      const metadata = await wasender.getGroupMetadata(firstGroup.jid);
+      const metadata = await wasender.getGroupMetadata(firstGroup.id);
       console.log(
         "First group participants count:",
         metadata.response.data.participants?.length

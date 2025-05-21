@@ -44,10 +44,10 @@ if (!apiKey) {
 const wasender = createWasender(apiKey);
 console.log("Wasender SDK Initialized for Group Management examples.");
 
-// Placeholders - replace with actual JIDs for testing
-const exampleGroupJid = "1234567890-1234567890@g.us"; // Replace with a valid group JID
-const participantJidsToAdd = ["19876543210", "19876543211"]; // E.164 format numbers
-const participantJidsToRemove = ["19876543210"];
+// Placeholders - replace with actual IDs for testing
+const exampleGroupId = "1234567890-1234567890@g.us"; // Replace with a valid group ID
+const participantIdsToAdd = ["19876543210", "19876543211"]; // E.164 format numbers
+const participantIdsToRemove = ["19876543210"];
 
 // Generic error handler
 function handleGroupApiError(error: unknown, operation: string) {
@@ -112,16 +112,16 @@ fetchAllGroups();
 
 ### 2. Send Message to a Group
 
-Use the standard `wasender.send()` method. The `to` field in the message payload should be the Group JID.
+Use the standard `wasender.send()` method. The `to` field in the message payload should be the Group ID.
 
 ```typescript
 // examples/send-group-message.ts
-async function sendSampleGroupMessage(groupJid: string) {
-  console.log(`\n--- Sending Message to Group: ${groupJid} ---`);
-  if (!groupJid) return console.error("Group JID is required.");
+async function sendSampleGroupMessage(groupId: string) {
+  console.log(`\n--- Sending Message to Group: ${groupId} ---`);
+  if (!groupId) return console.error("Group ID is required.");
 
   const textPayload: TextOnlyMessage = {
-    to: groupJid,
+    to: groupId,
     messageType: "text",
     text: "Hello everyone in this group from the Wasender SDK!",
   };
@@ -131,10 +131,10 @@ async function sendSampleGroupMessage(groupJid: string) {
     console.log("Group message sent successfully:", result.response.message);
     // Log rate limit info
   } catch (error) {
-    handleGroupApiError(error, `sending message to group ${groupJid}`);
+    handleGroupApiError(error, `sending message to group ${groupId}`);
   }
 }
-sendSampleGroupMessage(exampleGroupJid);
+sendSampleGroupMessage(exampleGroupId);
 ```
 
 ### 3. Get Group Metadata
@@ -143,13 +143,13 @@ Retrieves detailed metadata for a specific group.
 
 ```typescript
 // examples/get-group-metadata.ts
-async function fetchGroupMetadata(groupJid: string) {
-  console.log(`\n--- Fetching Metadata for Group: ${groupJid} ---`);
-  if (!groupJid) return console.error("Group JID is required.");
+async function fetchGroupMetadata(groupId: string) {
+  console.log(`\n--- Fetching Metadata for Group: ${groupId} ---`);
+  if (!groupId) return console.error("Group ID is required.");
 
   try {
     const result: GetGroupMetadataResult = await wasender.getGroupMetadata(
-      groupJid
+      groupId
     );
     console.log(
       "Group metadata:",
@@ -157,10 +157,10 @@ async function fetchGroupMetadata(groupJid: string) {
     );
     // Log rate limit info
   } catch (error) {
-    handleGroupApiError(error, `fetching metadata for group ${groupJid}`);
+    handleGroupApiError(error, `fetching metadata for group ${groupId}`);
   }
 }
-fetchGroupMetadata(exampleGroupJid);
+fetchGroupMetadata(exampleGroupId);
 ```
 
 ### 4. Get Group Participants
@@ -169,13 +169,13 @@ Retrieves a list of participants for a specific group.
 
 ```typescript
 // examples/get-group-participants.ts
-async function fetchGroupParticipants(groupJid: string) {
-  console.log(`\n--- Fetching Participants for Group: ${groupJid} ---`);
-  if (!groupJid) return console.error("Group JID is required.");
+async function fetchGroupParticipants(groupId: string) {
+  console.log(`\n--- Fetching Participants for Group: ${groupId} ---`);
+  if (!groupId) return console.error("Group ID is required.");
 
   try {
     const result: GetGroupParticipantsResult =
-      await wasender.getGroupParticipants(groupJid);
+      await wasender.getGroupParticipants(groupId);
     console.log(
       "Group participants retrieved:",
       result.response.data.length,
@@ -189,10 +189,10 @@ async function fetchGroupParticipants(groupJid: string) {
     }
     // Log rate limit info
   } catch (error) {
-    handleGroupApiError(error, `fetching participants for group ${groupJid}`);
+    handleGroupApiError(error, `fetching participants for group ${groupId}`);
   }
 }
-fetchGroupParticipants(exampleGroupJid);
+fetchGroupParticipants(exampleGroupId);
 ```
 
 ### 5. Add Group Participants
@@ -202,26 +202,26 @@ Adds participants to a group. Requires admin privileges.
 ```typescript
 // examples/add-group-participants.ts
 async function addParticipantsToGroup(
-  groupJid: string,
+  groupId: string,
   participantsToAdd: string[]
 ) {
-  console.log(`\n--- Adding Participants to Group: ${groupJid} ---`);
-  if (!groupJid || !participantsToAdd || participantsToAdd.length === 0) {
-    return console.error("Group JID and participants list are required.");
+  console.log(`\n--- Adding Participants to Group: ${groupId} ---`);
+  if (!groupId || !participantsToAdd || participantsToAdd.length === 0) {
+    return console.error("Group ID and participants list are required.");
   }
   try {
     const result: ModifyGroupParticipantsResult =
-      await wasender.addGroupParticipants(groupJid, participantsToAdd);
+      await wasender.addGroupParticipants(groupId, participantsToAdd);
     console.log(
       "Add participants result:",
       JSON.stringify(result.response.data, null, 2)
     );
     // Log rate limit info
   } catch (error) {
-    handleGroupApiError(error, `adding participants to group ${groupJid}`);
+    handleGroupApiError(error, `adding participants to group ${groupId}`);
   }
 }
-// addParticipantsToGroup(exampleGroupJid, participantJidsToAdd); // Uncomment to test - CAUTION: Modifies group
+// addParticipantsToGroup(exampleGroupId, participantIdsToAdd); // Uncomment to test - CAUTION: Modifies group
 ```
 
 ### 6. Remove Group Participants
@@ -231,26 +231,26 @@ Removes participants from a group. Requires admin privileges.
 ```typescript
 // examples/remove-group-participants.ts
 async function removeParticipantsFromGroup(
-  groupJid: string,
+  groupId: string,
   participantsToRemove: string[]
 ) {
-  console.log(`\n--- Removing Participants from Group: ${groupJid} ---`);
-  if (!groupJid || !participantsToRemove || participantsToRemove.length === 0) {
-    return console.error("Group JID and participants list are required.");
+  console.log(`\n--- Removing Participants from Group: ${groupId} ---`);
+  if (!groupId || !participantsToRemove || participantsToRemove.length === 0) {
+    return console.error("Group ID and participants list are required.");
   }
   try {
     const result: ModifyGroupParticipantsResult =
-      await wasender.removeGroupParticipants(groupJid, participantsToRemove);
+      await wasender.removeGroupParticipants(groupId, participantsToRemove);
     console.log(
       "Remove participants result:",
       JSON.stringify(result.response.data, null, 2)
     );
     // Log rate limit info
   } catch (error) {
-    handleGroupApiError(error, `removing participants from group ${groupJid}`);
+    handleGroupApiError(error, `removing participants from group ${groupId}`);
   }
 }
-// removeParticipantsFromGroup(exampleGroupJid, participantJidsToRemove); // Uncomment to test - CAUTION: Modifies group
+// removeParticipantsFromGroup(exampleGroupId, participantIdsToRemove); // Uncomment to test - CAUTION: Modifies group
 ```
 
 ### 7. Update Group Settings
@@ -259,9 +259,9 @@ Updates group settings like subject, description, announce mode, etc. Requires a
 
 ```typescript
 // examples/update-group-settings.ts
-async function updateSampleGroupSettings(groupJid: string) {
-  console.log(`\n--- Updating Settings for Group: ${groupJid} ---`);
-  if (!groupJid) return console.error("Group JID is required.");
+async function updateSampleGroupSettings(groupId: string) {
+  console.log(`\n--- Updating Settings for Group: ${groupId} ---`);
+  if (!groupId) return console.error("Group ID is required.");
 
   const settingsToUpdate: UpdateGroupSettingsPayload = {
     subject: "New Awesome Group Name via SDK",
@@ -272,23 +272,23 @@ async function updateSampleGroupSettings(groupJid: string) {
 
   try {
     const result: UpdateGroupSettingsResult =
-      await wasender.updateGroupSettings(groupJid, settingsToUpdate);
+      await wasender.updateGroupSettings(groupId, settingsToUpdate);
     console.log(
       "Update group settings result:",
       JSON.stringify(result.response.data, null, 2)
     );
     // Log rate limit info
   } catch (error) {
-    handleGroupApiError(error, `updating settings for group ${groupJid}`);
+    handleGroupApiError(error, `updating settings for group ${groupId}`);
   }
 }
-// updateSampleGroupSettings(exampleGroupJid); // Uncomment to test - CAUTION: Modifies group settings
+// updateSampleGroupSettings(exampleGroupId); // Uncomment to test - CAUTION: Modifies group settings
 ```
 
 ## Important Notes
 
-- **Group JIDs:** Ensure you use the correct Group JID format (e.g., `1234567890-1234567890@g.us`).
+- **Group IDs:** Ensure you use the correct Group ID format (e.g., `1234567890-1234567890@g.us`).
 - **Admin Privileges:** Operations like adding/removing participants or updating settings require the connected WhatsApp account to have admin privileges in the target group.
-- **Participant JIDs:** When adding or removing participants, provide their JIDs in E.164 phone number format (e.g., `12345678901`).
+- **Participant IDs:** When adding or removing participants, provide their IDs in E.164 phone number format (e.g., `12345678901`).
 
 This guide covers the group management functionalities of the Wasender SDK. Always test modifying operations carefully.

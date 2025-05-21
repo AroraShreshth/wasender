@@ -89,13 +89,13 @@ export interface BaseWebhookEvent<T extends WasenderWebhookEventType, D = any> {
 export interface MessageKey {
   id: string;
   fromMe: boolean;
-  remoteJid: string; // Recipient JID for outgoing, Sender JID for incoming
-  participant?: string; // For group messages, the JID of the actual sender
+  remoteId: string; // Recipient ID for outgoing, Sender ID for incoming
+  participant?: string; // For group messages, the ID of the actual sender
 }
 
 // ---------- Chat Event Payloads ----------
 export interface ChatEntry {
-  id: string; // Typically the JID of the chat participant or group
+  id: string; // Typically the ID of the chat participant or group
   name?: string; // Contact name or group subject
   conversationTimestamp?: number; // Unix timestamp of the last message
   unreadCount?: number;
@@ -106,14 +106,14 @@ export interface ChatEntry {
 
 export type ChatsUpsertEvent = BaseWebhookEvent<typeof WasenderWebhookEventType.ChatsUpsert, ChatEntry[]>;
 export type ChatsUpdateEvent = BaseWebhookEvent<typeof WasenderWebhookEventType.ChatsUpdate, Partial<ChatEntry>[]>; // Updates are often partial
-export type ChatsDeleteEvent = BaseWebhookEvent<typeof WasenderWebhookEventType.ChatsDelete, string[]>; // Array of chat IDs (JIDs)
+export type ChatsDeleteEvent = BaseWebhookEvent<typeof WasenderWebhookEventType.ChatsDelete, string[]>; // Array of chat IDs
 
 // ---------- Group Event Payloads ----------
 export interface GroupMetadata {
-  jid: string;
+  id: string;
   subject: string;
   creation?: number; // Unix timestamp
-  owner?: string; // JID of the group owner
+  owner?: string; // ID of the group owner
   desc?: string; // Group description
   participants?: GroupParticipantObject[]; // Ensuring this uses GroupParticipantObject
   announce?: boolean; // If true, only admins can send messages
@@ -127,15 +127,15 @@ export type GroupsUpdateEvent = BaseWebhookEvent<typeof WasenderWebhookEventType
 import { GroupParticipant as GroupParticipantObject } from './groups.ts'; // This import is used by GroupMetadata now
 
 export interface GroupParticipantsUpdateData {
-  jid: string; // Group JID
-  participants: Array<string | GroupParticipantObject>; // Array of participant JIDs affected or participant objects
+  id: string; // Group ID
+  participants: Array<string | GroupParticipantObject>; // Array of participant IDs affected or participant objects
   action: 'add' | 'remove' | 'promote' | 'demote';
 }
 export type GroupParticipantsUpdateEvent = BaseWebhookEvent<typeof WasenderWebhookEventType.GroupParticipantsUpdate, GroupParticipantsUpdateData>;
 
 // ---------- Contact Event Payloads ----------
 export interface ContactEntry {
-  jid: string;
+  id: string;
   name?: string; // User's saved name for the contact
   notify?: string; // Display name (often same as name or phone number)
   verifiedName?: string; // Official business name if verified
@@ -199,7 +199,7 @@ export type MessagesReactionEvent = BaseWebhookEvent<typeof WasenderWebhookEvent
 
 // ---------- Message Receipt Update Event Payloads ----------
 export interface Receipt {
-    userJid: string; // JID of the user whose receipt status changed
+    userJid: string; // ID of the user whose receipt status changed
     status: 'sent' | 'delivered' | 'read' | 'played';
     t?: number; // Timestamp of the status change
 }
@@ -255,7 +255,7 @@ function processParsedWebhookEvent(event: WasenderWebhookEvent) {
   console.log('Processing event type:', event.type);
   switch (event.type) {
     case WasenderWebhookEventType.MessagesUpsert:
-      console.log('New message from:', event.data.key.remoteJid, 'ID:', event.data.key.id);
+      console.log('New message from:', event.data.key.remoteId, 'ID:', event.data.key.id);
       if (event.data.message?.conversation) {
         console.log('Text:', event.data.message.conversation);
       }

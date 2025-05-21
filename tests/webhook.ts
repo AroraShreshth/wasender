@@ -125,10 +125,10 @@ describe('Webhook handler', () => {
     });
 
     it('parses GroupsUpsertEvent correctly', async () => {
-      const participant1: GroupParticipant = { jid: '1234567890', isAdmin: true, isSuperAdmin: true };
-      const participant2: GroupParticipant = { jid: '0987654321', isAdmin: false, isSuperAdmin: false };
+      const participant1: GroupParticipant = { id: '1234567890', isAdmin: true, isSuperAdmin: true };
+      const participant2: GroupParticipant = { id: '0987654321', isAdmin: false, isSuperAdmin: false };
       const groupData: GroupMetadata = {
-        jid: '123456789-987654321@g.us',
+        id: '123456789-987654321@g.us',
         subject: 'Group Name',
         creation: 1633456700,
         owner: '1234567890',
@@ -147,7 +147,7 @@ describe('Webhook handler', () => {
     
     it('parses GroupsUpdateEvent correctly', async () => {
         const groupUpdateData: Partial<GroupMetadata> = {
-            jid: "123456789-987654321@g.us",
+            id: "123456789-987654321@g.us",
             announce: true,
             restrict: false
         };
@@ -163,7 +163,7 @@ describe('Webhook handler', () => {
 
     it('parses GroupParticipantsUpdateEvent correctly', async () => {
       const participantsUpdateData: GroupParticipantsUpdateData = {
-        jid: '123456789-987654321@g.us',
+        id: '123456789-987654321@g.us',
         participants: ['1234567890'],
         action: 'add',
       };
@@ -179,7 +179,7 @@ describe('Webhook handler', () => {
 
     it('parses ContactsUpsertEvent correctly', async () => {
       const contactData: ContactEntry = {
-        jid: '1234567890',
+        id: '1234567890',
         name: 'Contact Name',
         notify: 'Contact Display Name',
         verifiedName: 'Verified Business Name',
@@ -197,7 +197,7 @@ describe('Webhook handler', () => {
 
     it('parses ContactsUpdateEvent correctly', async () => {
         const contactUpdateData: Partial<ContactEntry> = {
-            jid: "1234567890",
+            id: "1234567890",
             imgUrl: "https://pps.whatsapp.net/v/t61.24694-24/123456789_123456789_123456789_123456789_123456789.jpg"
         };
         const payload: ContactsUpdateEvent = {
@@ -211,7 +211,7 @@ describe('Webhook handler', () => {
     });
 
     it('parses MessagesUpsertEvent (new message) correctly', async () => {
-      const messageKey: MessageKey = { id: 'message-id-123', fromMe: false, remoteJid: '+1234567890' };
+      const messageKey: MessageKey = { id: 'message-id-123', fromMe: false, remoteId: '+1234567890' };
       const messageContent: MessageContent = { conversation: 'Hello, I have a question' };
       const messageData: MessagesUpsertData = { key: messageKey, message: messageContent };
       const payload: MessagesUpsertEvent = {
@@ -225,7 +225,7 @@ describe('Webhook handler', () => {
     });
 
     it('parses MessagesUpdateEvent (status update) correctly', async () => {
-      const messageKey: MessageKey = { id: 'message-id-456', fromMe: true, remoteJid: '+1987654321' };
+      const messageKey: MessageKey = { id: 'message-id-456', fromMe: true, remoteId: '+1987654321' };
       const messageUpdate: MessageUpdate = { status: 'delivered' };
       const updateEntry: MessagesUpdateDataEntry = { key: messageKey, update: messageUpdate };
       const payload: MessagesUpdateEvent = {
@@ -242,7 +242,7 @@ describe('Webhook handler', () => {
         const messageKey: MessageKey = {
             id: "message-id-789",
             fromMe: false,
-            remoteJid: "+1234567890"
+            remoteId: "+1234567890"
         };
         const payload: MessagesDeleteEvent = {
             type: WasenderWebhookEventType.MessagesDelete,
@@ -257,7 +257,7 @@ describe('Webhook handler', () => {
     });
 
     it('parses MessageSentEvent correctly', async () => {
-      const messageKey: MessageKey = { id: 'message-id-456', fromMe: true, remoteJid: '+1987654321' };
+      const messageKey: MessageKey = { id: 'message-id-456', fromMe: true, remoteId: '+1987654321' };
       const messageContent: MessageContent = { conversation: 'This is my reply.' };
       const sentData: MessageSentData = { key: messageKey, message: messageContent, status: 'sent' };
       const payload: MessageSentEvent = {
@@ -295,7 +295,7 @@ describe('Webhook handler', () => {
     });
 
     it('parses MessagesReactionEvent correctly', async () => {
-      const reactionKey: MessageKey = { id: 'message-id-123', fromMe: false, remoteJid: '+1234567890' };
+      const reactionKey: MessageKey = { id: 'message-id-123', fromMe: false, remoteId: '+1234567890' };
       const reaction: Reaction = { text: '👍', key: reactionKey };
       const reactionEntry: MessagesReactionDataEntry = { key: reactionKey, reaction: reaction };
       const payload: MessagesReactionEvent = {
@@ -309,7 +309,7 @@ describe('Webhook handler', () => {
     });
 
     it('parses MessageReceiptUpdateEvent correctly', async () => {
-        const messageKey: MessageKey = { id: 'message-id-xyz', fromMe: true, remoteJid: 'recipient@s.whatsapp.net' };
+        const messageKey: MessageKey = { id: 'message-id-xyz', fromMe: true, remoteId: 'recipient@s.whatsapp.net' };
         const receipt: Receipt = { userJid: 'recipient@s.whatsapp.net', status: 'read', t: 1633456815 };
         const receiptEntry: MessageReceiptUpdateDataEntry = { key: messageKey, receipt: receipt };
         const payload: MessageReceiptUpdateEvent = {

@@ -8,8 +8,8 @@ import { RateLimitInfo, WasenderSuccessResponse } from "./messages.ts";
 // ---------- Group Data Structures ----------
 
 export interface GroupParticipant {
-  /** The JID (Jabber ID) of the participant. */
-  jid: string;
+  /** The id (Jabber ID) of the participant. */
+  id: string;
   /** Indicates if the participant is an admin in the group. */
   isAdmin: boolean;
   /** Indicates if the participant is a super admin (owner/creator) of the group. */
@@ -17,8 +17,8 @@ export interface GroupParticipant {
 }
 
 export interface BasicGroupInfo {
-  /** The JID (Jabber ID) of the group (e.g., '123456789-987654321@g.us'). */
-  jid: string;
+  /** The id (Jabber ID) of the group (e.g., '123456789-987654321@g.us'). */
+  id: string;
   /** The name or subject of the group. */
   name: string | null; // Name can sometimes be null or empty
   /** URL of the group's profile picture, if available. */
@@ -29,13 +29,27 @@ export interface GroupMetadata extends BasicGroupInfo {
   /** Timestamp of when the group was created. */
   creation: number;
   /** The JID of the group owner/creator. */
-  owner: string | undefined; // Owner might not always be present or could be a JID
+  owner: string | undefined; // Owner JID might not always be present
   /** The description of the group. */
   desc?: string | null;
+  /** The owner of the group description. */
+  descOwner?: string | null;
+  /** The ID of the group description. */
+  descId?: string | null;
+  /** Whether the group is restricted to admin-only messages. */
+  restrict?: boolean;
+  /** Whether announcements are enabled for the group. */
+  announce?: boolean;
+  /** Size of the group. */
+  size?: number;
+  /** Owner of the group subject. */
+  subjectOwner?: string;
+  /** Timestamp when subject was last changed. */
+  subjectTime?: number;
   /** Array of participants in the group. */
   participants: GroupParticipant[];
-  /** The subject of the group (often same as name). */
-  subject?: string; // Explicitly adding subject as per API response example
+  /** The subject of the group. */
+  subject: string;
 }
 
 // ---------- API Request Payloads ----------
@@ -62,8 +76,8 @@ export interface UpdateGroupSettingsPayload {
 export interface ParticipantActionStatus {
   /** HTTP-like status code for the operation on this participant. */
   status: number;
-  /** JID of the participant. */
-  jid: string;
+  /** ID of the participant. */
+  id: string;
   /** Message describing the result (e.g., 'added', 'removed', 'not-authorized'). */
   message: string;
 }

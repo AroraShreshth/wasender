@@ -34,25 +34,25 @@ describe('Group Type Definitions', () => {
   };
 
   const mockAdminParticipant: GroupParticipant = {
-    jid: 'admin@s.whatsapp.net',
+    id: 'admin@s.whatsapp.net',
     isAdmin: true,
     isSuperAdmin: true,
   };
 
   const mockParticipant: GroupParticipant = {
-    jid: 'participant@s.whatsapp.net',
+    id: 'participant@s.whatsapp.net',
     isAdmin: false,
     isSuperAdmin: false,
   };
 
   const mockBasicGroupInfo: BasicGroupInfo = {
-    jid: '1234567890-1234567890@g.us',
+    id: '1234567890-1234567890@g.us',
     name: 'Test Group Name',
     imgUrl: 'https://group.pic/image.png',
   };
   
   const mockBasicGroupInfoNulls: BasicGroupInfo = {
-    jid: '1234567890-1234567891@g.us',
+    id: '1234567890-1234567891@g.us',
     name: null,
     imgUrl: null,
   };
@@ -62,6 +62,13 @@ describe('Group Type Definitions', () => {
     creation: 1678886400,
     owner: 'owner@s.whatsapp.net',
     desc: 'This is a test group description.',
+    descOwner: 'descOwner@s.whatsapp.net',
+    descId: 'descriptionMessageId',
+    restrict: false,
+    announce: false,
+    size: 25,
+    subjectOwner: 'subjectOwner@s.whatsapp.net',
+    subjectTime: 1678886400,
     participants: [mockAdminParticipant, mockParticipant],
     subject: 'Test Group Subject',
   };
@@ -69,7 +76,7 @@ describe('Group Type Definitions', () => {
   describe('Core Data Structures', () => {
     it('GroupParticipant type should be correct', () => {
       const admin: GroupParticipant = { ...mockAdminParticipant };
-      expect(admin.jid).toBe('admin@s.whatsapp.net');
+      expect(admin.id).toBe('admin@s.whatsapp.net');
       expect(admin.isAdmin).toBe(true);
       expect(admin.isSuperAdmin).toBe(true);
 
@@ -79,7 +86,7 @@ describe('Group Type Definitions', () => {
 
     it('BasicGroupInfo type should be correct', () => {
       const group: BasicGroupInfo = { ...mockBasicGroupInfo };
-      expect(group.jid).toBe('1234567890-1234567890@g.us');
+      expect(group.id).toBe('1234567890-1234567890@g.us');
       expect(group.name).toBe('Test Group Name');
       expect(group.imgUrl).toBe('https://group.pic/image.png');
       
@@ -90,27 +97,42 @@ describe('Group Type Definitions', () => {
 
     it('GroupMetadata type should be correct', () => {
       const metadata: GroupMetadata = { ...mockGroupMetadata };
-      expect(metadata.jid).toBe(mockBasicGroupInfo.jid);
+      expect(metadata.id).toBe(mockBasicGroupInfo.id);
       expect(metadata.creation).toBe(1678886400);
       expect(metadata.owner).toBe('owner@s.whatsapp.net');
       expect(metadata.desc).toBe('This is a test group description.');
+      expect(metadata.descOwner).toBe('descOwner@s.whatsapp.net');
+      expect(metadata.descId).toBe('descriptionMessageId');
+      expect(metadata.restrict).toBe(false);
+      expect(metadata.announce).toBe(false);
+      expect(metadata.size).toBe(25);
+      expect(metadata.subjectOwner).toBe('subjectOwner@s.whatsapp.net');
+      expect(metadata.subjectTime).toBe(1678886400);
       expect(metadata.participants.length).toBe(2);
       expect(metadata.participants[0].isSuperAdmin).toBe(true);
       expect(metadata.subject).toBe('Test Group Subject');
     });
-     it('GroupMetadata type should allow optional owner and desc', () => {
+     it('GroupMetadata type should allow optional owner and desc fields', () => {
       const minimalMetadata: GroupMetadata = {
-        jid: 'groupjid@g.us',
+        id: 'groupid@g.us',
         name: 'Minimal Group',
         imgUrl: null,
         creation: 1678886401,
         owner: undefined,
         participants: [mockParticipant],
-        // desc, subject are optional due to ? and can be omitted
+        subject: 'Minimal Subject'
+        // desc, descOwner, descId, restrict, announce, size, subjectOwner, subjectTime are optional and can be omitted
       };
       expect(minimalMetadata.owner).toBeUndefined();
       expect(minimalMetadata.desc).toBeUndefined();
-      expect(minimalMetadata.subject).toBeUndefined();
+      expect(minimalMetadata.descOwner).toBeUndefined();
+      expect(minimalMetadata.descId).toBeUndefined();
+      expect(minimalMetadata.restrict).toBeUndefined();
+      expect(minimalMetadata.announce).toBeUndefined();
+      expect(minimalMetadata.size).toBeUndefined();
+      expect(minimalMetadata.subjectOwner).toBeUndefined();
+      expect(minimalMetadata.subjectTime).toBeUndefined();
+      expect(minimalMetadata.subject).toBe('Minimal Subject');
     });
   });
 
@@ -147,11 +169,11 @@ describe('Group Type Definitions', () => {
 
   describe('API Response Data Structures', () => {
     it('ParticipantActionStatus type should be correct', () => {
-      const status1: ParticipantActionStatus = { status: 200, jid: '123', message: 'added' };
-      const status2: ParticipantActionStatus = { status: 403, jid: '456', message: 'not-authorized' };
+      const status1: ParticipantActionStatus = { status: 200, id: '123', message: 'added' };
+      const status2: ParticipantActionStatus = { status: 403, id: '456', message: 'not-authorized' };
       expect(status1.status).toBe(200);
       expect(status1.message).toBe('added');
-      expect(status2.jid).toBe('456');
+      expect(status2.id).toBe('456');
     });
 
     it('UpdateGroupSettingsResponseData type should be correct', () => {
@@ -204,8 +226,8 @@ describe('Group Type Definitions', () => {
     });
 
     it('ModifyGroupParticipantsResponse type should be correct', () => {
-      const actionStatus1: ParticipantActionStatus = { status: 200, jid: '123', message: 'added' };
-      const actionStatus2: ParticipantActionStatus = { status: 403, jid: '456', message: 'not-authorized' };
+      const actionStatus1: ParticipantActionStatus = { status: 200, id: '123', message: 'added' };
+      const actionStatus2: ParticipantActionStatus = { status: 403, id: '456', message: 'not-authorized' };
       const response: ModifyGroupParticipantsResponse = {
         success: true,
         message: 'Participant modification processed',
@@ -233,7 +255,7 @@ describe('Group Type Definitions', () => {
         response: { success: true, message: 'Groups fetched', data: [mockBasicGroupInfo] },
         rateLimit: mockRateLimitInfo,
       };
-      expect(result.response.data[0].jid).toBe(mockBasicGroupInfo.jid);
+      expect(result.response.data[0].id).toBe(mockBasicGroupInfo.id);
       expect(result.rateLimit).toBeDefined();
       if (result.rateLimit) {
         expect(result.rateLimit.limit).toBe(100);
@@ -269,7 +291,7 @@ describe('Group Type Definitions', () => {
         response: {
           success: true,
           message: 'Participants modified',
-          data: [{ status: 200, jid: 'p1', message: 'added' }],
+          data: [{ status: 200, id: 'p1', message: 'added' }],
         },
         rateLimit: mockRateLimitInfo,
       };

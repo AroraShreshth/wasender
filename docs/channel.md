@@ -8,12 +8,12 @@ This document explains how to send messages to WhatsApp Channels (within Communi
 
 Sending a message to a WhatsApp Channel utilizes the existing generic `wasender.send()` method. The key differences compared to sending a message to a regular user or group are:
 
-1.  **Recipient (`to` field):** The `to` field in the message payload must be the unique **Channel ID** (also known as Channel JID). This typically looks like `12345678901234567890@newsletter`.
+1.  **Recipient (`to` field):** The `to` field in the message payload must be the unique **Channel ID**. This typically looks like `12345678901234567890@newsletter`.
 2.  **Message Type Restriction:** Currently, the Wasender API **only supports sending text messages** to channels. Other message types (images, videos, documents, etc.) are not supported for channels at this time via this method.
 
 ## Prerequisites
 
-1.  **Obtain a Channel ID:** You need the specific ID of the channel you want to send a message to. The API documentation suggests that one way to obtain a Channel ID is by listening for the `message.upsert` webhook event, as this event data for messages originating from a channel will include the channel's JID.
+1.  **Obtain a Channel ID:** You need the specific ID of the channel you want to send a message to. The API documentation suggests that one way to obtain a Channel ID is by listening for the `message.upsert` webhook event, as this event data for messages originating from a channel will include the channel's ID.
 2.  **SDK Initialization:** Ensure the Wasender SDK is correctly initialized in your project as shown in other documentation examples (e.g., `messages.md` or `contacts.md`).
 
 ## How to Send a Message to a Channel
@@ -31,7 +31,7 @@ import { TextOnlyMessage } from "./messages";
 export type ChannelTextMessage = TextOnlyMessage;
 ```
 
-This emphasizes that the payload should conform to `TextOnlyMessage` and the `to` field should be the Channel JID.
+This emphasizes that the payload should conform to `TextOnlyMessage` and the `to` field should be the Channel ID.
 
 ### Code Example
 
@@ -54,12 +54,12 @@ if (!apiKey) {
 const wasender = createWasender(apiKey);
 
 // Replace with the actual Channel ID you want to send a message to
-const targetChannelJid = "12345678901234567890@newsletter";
+const targetChannelId = "12345678901234567890@newsletter";
 
-async function sendMesageToChannel(channelJid: string, messageText: string) {
-  console.log(`\n--- Attempting to Send Message to Channel: ${channelJid} ---`);
-  if (!channelJid) {
-    console.error("Channel JID is required.");
+async function sendMesageToChannel(channelId: string, messageText: string) {
+  console.log(`\n--- Attempting to Send Message to Channel: ${channelId} ---`);
+  if (!channelId) {
+    console.error("Channel ID is required.");
     return;
   }
   if (!messageText) {
@@ -68,7 +68,7 @@ async function sendMesageToChannel(channelJid: string, messageText: string) {
   }
 
   const channelMessagePayload: ChannelTextMessage = {
-    to: channelJid,
+    to: channelId,
     messageType: "text", // Must be 'text' for channels
     text: messageText,
   };
@@ -89,7 +89,7 @@ async function sendMesageToChannel(channelJid: string, messageText: string) {
     );
   } catch (error) {
     if (error instanceof WasenderAPIError) {
-      console.error(`API Error sending to channel ${channelJid}:`);
+      console.error(`API Error sending to channel ${channelId}:`);
       console.error(`  Message: ${error.message}`);
       console.error(`  Status Code: ${error.statusCode || "N/A"}`);
       if (error.apiMessage) console.error(`  API Message: ${error.apiMessage}`);
@@ -110,7 +110,7 @@ async function sendMesageToChannel(channelJid: string, messageText: string) {
       }
     } else {
       console.error(
-        `An unexpected error occurred sending to channel ${channelJid}:`,
+        `An unexpected error occurred sending to channel ${channelId}:`,
         error
       );
     }
@@ -119,18 +119,18 @@ async function sendMesageToChannel(channelJid: string, messageText: string) {
 
 // Example usage:
 sendMesageToChannel(
-  targetChannelJid,
+  targetChannelId,
   "Hello Channel! This is a test message from the SDK."
 );
 
 // Example for another channel or message:
-// const anotherChannelJid = "09876543210987654321@newsletter";
-// sendMesageToChannel(anotherChannelJid, "Another important update for our subscribers!");
+// const anotherChannelId = "09876543210987654321@newsletter";
+// sendMesageToChannel(anotherChannelId, "Another important update for our subscribers!");
 ```
 
 ### Key Points from the Example:
 
-- **`to`**: Set to the `targetChannelJid`.
+- **`to`**: Set to the `targetChannelId`.
 - **`messageType`**: Explicitly set to `"text"`.
 - **`text`**: Contains the content of your message.
 - The `ChannelTextMessage` type is used for the payload for better type safety and clarity.
