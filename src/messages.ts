@@ -138,5 +138,6 @@ export interface RateLimitInfo {
 /** Combined result for a successful API call, including the response body and rate limit info. */
 export interface WasenderSendResult {
   response: WasenderSuccessResponse;
-  rateLimit: RateLimitInfo;
+  /** Optional. Rate limit information from the API response. May be undefined if not applicable or not provided by the server. */
+  rateLimit?: RateLimitInfo;
 }

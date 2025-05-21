@@ -285,7 +285,10 @@ describe('Session Type Definitions', () => {
       };
       expect(result.response.message).toBe('Sessions retrieved');
       expect(result.response.data[0].name).toBe('Business WhatsApp');
-      expect(result.rateLimit.limit).toBe(100);
+      expect(result.rateLimit).toBeDefined();
+      if (result.rateLimit) {
+        expect(result.rateLimit.limit).toBe(100);
+      }
     });
 
     it('GetWhatsAppSessionDetailsResult type should be correct', () => {
@@ -295,7 +298,10 @@ describe('Session Type Definitions', () => {
       };
       expect(result.response.message).toBe('Details retrieved');
       expect(result.response.data.id).toBe(1);
-      expect(result.rateLimit.remaining).toBe(99);
+      expect(result.rateLimit).toBeDefined();
+      if (result.rateLimit) {
+        expect(result.rateLimit.remaining).toBe(99);
+      }
     });
     
     it('CreateWhatsAppSessionResult type should be correct', () => {
@@ -305,7 +311,10 @@ describe('Session Type Definitions', () => {
       };
       expect(result.response.message).toBe('Session created');
       expect(result.response.data.status).toBe('CONNECTED');
-      expect(result.rateLimit.limit).toBe(100);
+      expect(result.rateLimit).toBeDefined();
+      if (result.rateLimit) {
+        expect(result.rateLimit.limit).toBe(100);
+      }
     });
 
     it('UpdateWhatsAppSessionResult type should be correct', () => {
@@ -315,7 +324,10 @@ describe('Session Type Definitions', () => {
       };
       expect(result.response.message).toBe('Session updated');
       expect(result.response.data.phone_number).toBe('+1234567890');
-      expect(result.rateLimit.remaining).toBe(99);
+      expect(result.rateLimit).toBeDefined();
+      if (result.rateLimit) {
+        expect(result.rateLimit.remaining).toBe(99);
+      }
     });
 
     it('DeleteWhatsAppSessionResult type should be correct', () => {
@@ -325,7 +337,10 @@ describe('Session Type Definitions', () => {
       };
       expect(result.response.message).toBe('Session deleted');
       expect(result.response.data).toBeNull();
-      expect(result.rateLimit.limit).toBe(100);
+      expect(result.rateLimit).toBeDefined();
+      if (result.rateLimit) {
+        expect(result.rateLimit.limit).toBe(100);
+      }
     });
 
     it('ConnectSessionResult type should be correct', () => {
@@ -335,7 +350,10 @@ describe('Session Type Definitions', () => {
       };
       expect(result.response.message).toBe('Connect action done');
       expect(result.response.data.qrCode).toBe('testQR');
-      expect(result.rateLimit.remaining).toBe(99);
+      expect(result.rateLimit).toBeDefined();
+      if (result.rateLimit) {
+        expect(result.rateLimit.remaining).toBe(99);
+      }
     });
 
     it('GetQRCodeResult type should be correct', () => {
@@ -345,7 +363,10 @@ describe('Session Type Definitions', () => {
       };
       expect(result.response.message).toBe('QR code fetched');
       expect(result.response.data.qrCode).toBe('testQRagain');
-      expect(result.rateLimit.limit).toBe(100);
+      expect(result.rateLimit).toBeDefined();
+      if (result.rateLimit) {
+        expect(result.rateLimit.limit).toBe(100);
+      }
     });
 
     it('DisconnectSessionResult type should be correct', () => {
@@ -355,7 +376,10 @@ describe('Session Type Definitions', () => {
       };
       expect(result.response.message).toBe('Disconnected action performed');
       expect(result.response.data.message).toBe('Done');
-      expect(result.rateLimit.remaining).toBe(99);
+      expect(result.rateLimit).toBeDefined();
+      if (result.rateLimit) {
+        expect(result.rateLimit.remaining).toBe(99);
+      }
     });
 
     it('RegenerateApiKeyResult type should be correct', () => {
@@ -364,7 +388,10 @@ describe('Session Type Definitions', () => {
         rateLimit: mockRateLimitInfo,
       };
       expect(result.response.api_key).toBe('newKey123');
-      expect(result.rateLimit.limit).toBe(100);
+      expect(result.rateLimit).toBeDefined();
+      if (result.rateLimit) {
+        expect(result.rateLimit.limit).toBe(100);
+      }
     });
     
     it('GetSessionStatusResult type should be correct', () => {
@@ -373,7 +400,10 @@ describe('Session Type Definitions', () => {
         rateLimit: mockRateLimitInfo,
       };
       expect(result.response.status).toBe<WhatsAppSessionStatus>('LOGGED_OUT');
-      expect(result.rateLimit.remaining).toBe(99);
+      expect(result.rateLimit).toBeDefined();
+      if (result.rateLimit) {
+        expect(result.rateLimit.remaining).toBe(99);
+      }
     });
   });
 });

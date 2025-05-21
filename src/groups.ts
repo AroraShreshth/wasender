@@ -107,25 +107,30 @@ export interface UpdateGroupSettingsResponse extends WasenderSuccessResponse {
 
 export interface GetAllGroupsResult {
   response: GetAllGroupsResponse;
-  rateLimit: RateLimitInfo;
+  /** Optional. Rate limit information from the API response. May be undefined if not applicable or not provided by the server. */
+  rateLimit?: RateLimitInfo;
 }
 
 export interface GetGroupMetadataResult {
   response: GetGroupMetadataResponse;
-  rateLimit: RateLimitInfo;
+  /** Optional. Rate limit information from the API response. May be undefined if not applicable or not provided by the server. */
+  rateLimit?: RateLimitInfo;
 }
 
 export interface GetGroupParticipantsResult {
   response: GetGroupParticipantsResponse;
-  rateLimit: RateLimitInfo;
+  /** Optional. Rate limit information from the API response. May be undefined if not applicable or not provided by the server. */
+  rateLimit?: RateLimitInfo;
 }
 
 export interface ModifyGroupParticipantsResult {
   response: ModifyGroupParticipantsResponse;
-  rateLimit: RateLimitInfo;
+  /** Optional. Rate limit information from the API response. May be undefined if not applicable or not provided by the server. */
+  rateLimit?: RateLimitInfo;
 }
 
 export interface UpdateGroupSettingsResult {
   response: UpdateGroupSettingsResponse;
-  rateLimit: RateLimitInfo;
+  /** Optional. Rate limit information from the API response. May be undefined if not applicable or not provided by the server. */
+  rateLimit?: RateLimitInfo;
 }

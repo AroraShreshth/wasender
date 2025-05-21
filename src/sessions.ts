@@ -130,52 +130,62 @@ export interface GetSessionStatusResponse {
 
 export interface GetAllWhatsAppSessionsResult {
   response: GetAllWhatsAppSessionsResponse;
-  rateLimit: RateLimitInfo;
+  /** Optional. Rate limit information from the API response. May be undefined if not applicable or not provided by the server. */
+  rateLimit?: RateLimitInfo;
 }
 
 export interface GetWhatsAppSessionDetailsResult {
   response: GetWhatsAppSessionDetailsResponse;
-  rateLimit: RateLimitInfo;
+  /** Optional. Rate limit information from the API response. May be undefined if not applicable or not provided by the server. */
+  rateLimit?: RateLimitInfo;
 }
 
 export interface CreateWhatsAppSessionResult {
   response: CreateWhatsAppSessionResponse;
-  rateLimit: RateLimitInfo;
+  /** Optional. Rate limit information from the API response. May be undefined if not applicable or not provided by the server. */
+  rateLimit?: RateLimitInfo;
 }
 
 export interface UpdateWhatsAppSessionResult {
   response: UpdateWhatsAppSessionResponse;
-  rateLimit: RateLimitInfo;
+  /** Optional. Rate limit information from the API response. May be undefined if not applicable or not provided by the server. */
+  rateLimit?: RateLimitInfo;
 }
 
 export interface DeleteWhatsAppSessionResult {
   response: DeleteWhatsAppSessionResponse;
-  rateLimit: RateLimitInfo;
+  /** Optional. Rate limit information from the API response. May be undefined if not applicable or not provided by the server. */
+  rateLimit?: RateLimitInfo;
 }
 
 export interface ConnectSessionResult {
   response: ConnectSessionResponse;
-  rateLimit: RateLimitInfo;
+  /** Optional. Rate limit information from the API response. May be undefined if not applicable or not provided by the server. */
+  rateLimit?: RateLimitInfo;
 }
 
 export interface GetQRCodeResult {
   response: GetQRCodeResponse;
-  rateLimit: RateLimitInfo;
+  /** Optional. Rate limit information from the API response. May be undefined if not applicable or not provided by the server. */
+  rateLimit?: RateLimitInfo;
 }
 
 export interface DisconnectSessionResult {
   response: DisconnectSessionResponse;
-  rateLimit: RateLimitInfo;
+  /** Optional. Rate limit information from the API response. May be undefined if not applicable or not provided by the server. */
+  rateLimit?: RateLimitInfo;
 }
 
 export interface RegenerateApiKeyResult {
     response: RegenerateApiKeyResponse; 
-    rateLimit: RateLimitInfo;
+    /** Optional. Rate limit information from the API response. May be undefined if not applicable or not provided by the server. */
+    rateLimit?: RateLimitInfo;
 }
 
 // For GetSessionStatus, if it returns rate limits, it would be:
 export interface GetSessionStatusResult {
     response: GetSessionStatusResponse; 
-    rateLimit: RateLimitInfo; 
+    /** Optional. Rate limit information from the API response. May be undefined if not applicable or not provided by the server. */
+    rateLimit?: RateLimitInfo; 
 }
 // If not, GetSessionStatusResponse is used directly.

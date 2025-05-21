@@ -234,7 +234,10 @@ describe('Group Type Definitions', () => {
         rateLimit: mockRateLimitInfo,
       };
       expect(result.response.data[0].jid).toBe(mockBasicGroupInfo.jid);
-      expect(result.rateLimit.limit).toBe(100);
+      expect(result.rateLimit).toBeDefined();
+      if (result.rateLimit) {
+        expect(result.rateLimit.limit).toBe(100);
+      }
     });
 
     it('GetGroupMetadataResult type should be correct', () => {
@@ -243,7 +246,10 @@ describe('Group Type Definitions', () => {
         rateLimit: mockRateLimitInfo,
       };
       expect(result.response.data.owner).toBe('owner@s.whatsapp.net');
-      expect(result.rateLimit.remaining).toBe(99);
+      expect(result.rateLimit).toBeDefined();
+      if (result.rateLimit) {
+        expect(result.rateLimit.remaining).toBe(99);
+      }
     });
 
     it('GetGroupParticipantsResult type should be correct', () => {
@@ -252,7 +258,10 @@ describe('Group Type Definitions', () => {
         rateLimit: mockRateLimitInfo,
       };
       expect(result.response.data[0].isSuperAdmin).toBe(false);
-      expect(result.rateLimit.getResetTimestampAsDate!()).toBeInstanceOf(Date);
+      expect(result.rateLimit).toBeDefined();
+      if (result.rateLimit) {
+        expect(result.rateLimit.getResetTimestampAsDate!()).toBeInstanceOf(Date);
+      }
     });
 
     it('ModifyGroupParticipantsResult type should be correct', () => {
@@ -265,7 +274,10 @@ describe('Group Type Definitions', () => {
         rateLimit: mockRateLimitInfo,
       };
       expect(result.response.data[0].message).toBe('added');
-      expect(result.rateLimit.limit).toBe(100);
+      expect(result.rateLimit).toBeDefined();
+      if (result.rateLimit) {
+        expect(result.rateLimit.limit).toBe(100);
+      }
     });
 
     it('UpdateGroupSettingsResult type should be correct', () => {
@@ -278,7 +290,10 @@ describe('Group Type Definitions', () => {
         rateLimit: mockRateLimitInfo,
       };
       expect(result.response.data.description).toBe('Desc only');
-      expect(result.rateLimit.remaining).toBe(99);
+      expect(result.rateLimit).toBeDefined();
+      if (result.rateLimit) {
+        expect(result.rateLimit.remaining).toBe(99);
+      }
     });
   });
 });

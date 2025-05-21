@@ -143,7 +143,10 @@ describe('Contact Type Definitions', () => {
         rateLimit: mockRateLimitInfo,
       };
       expect(result.response.data[0].name).toBe('Contact Name');
-      expect(result.rateLimit.limit).toBe(100);
+      expect(result.rateLimit).toBeDefined();
+      if (result.rateLimit) {
+        expect(result.rateLimit.limit).toBe(100);
+      }
     });
 
     it('GetContactInfoResult type should be correct', () => {
@@ -157,7 +160,10 @@ describe('Contact Type Definitions', () => {
       };
       expect(result.response.data.jid).toBe('1234567890');
       expect(result.response.data.exists).toBe(false);
-      expect(result.rateLimit.remaining).toBe(99);
+      expect(result.rateLimit).toBeDefined();
+      if (result.rateLimit) {
+        expect(result.rateLimit.remaining).toBe(99);
+      }
     });
 
     it('GetContactProfilePictureResult type should be correct', () => {
@@ -170,7 +176,10 @@ describe('Contact Type Definitions', () => {
         rateLimit: mockRateLimitInfo,
       };
       expect(result.response.data.imgUrl).toBe('https://some.url/pic.png');
-      expect(result.rateLimit.resetTimestamp).toBeGreaterThan(0);
+      expect(result.rateLimit).toBeDefined();
+      if (result.rateLimit) {
+        expect(result.rateLimit.resetTimestamp).toBeGreaterThan(0);
+      }
     });
 
     it('ContactActionResult type should be correct', () => {
@@ -183,7 +192,10 @@ describe('Contact Type Definitions', () => {
         rateLimit: mockRateLimitInfo,
       };
       expect(result.response.data.message).toBe('Contact blocked successfully');
-      expect(result.rateLimit.getResetTimestampAsDate!()).toBeInstanceOf(Date);
+      expect(result.rateLimit).toBeDefined();
+      if (result.rateLimit) {
+        expect(result.rateLimit.getResetTimestampAsDate!()).toBeInstanceOf(Date);
+      }
     });
   });
 });

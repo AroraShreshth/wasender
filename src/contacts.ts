@@ -56,23 +56,27 @@ export interface ContactActionResponse extends WasenderSuccessResponse {
 /** Combined result for a successful "get all contacts" API call. */
 export interface GetAllContactsResult {
   response: GetAllContactsResponse;
-  rateLimit: RateLimitInfo;
+  /** Optional. Rate limit information from the API response. May be undefined if not applicable or not provided by the server. */
+  rateLimit?: RateLimitInfo;
 }
 
 /** Combined result for a successful "get contact info" API call. */
 export interface GetContactInfoResult {
   response: GetContactInfoResponse;
-  rateLimit: RateLimitInfo;
+  /** Optional. Rate limit information from the API response. May be undefined if not applicable or not provided by the server. */
+  rateLimit?: RateLimitInfo;
 }
 
 /** Combined result for a successful "get contact profile picture" API call. */
 export interface GetContactProfilePictureResult {
   response: GetContactProfilePictureResponse;
-  rateLimit: RateLimitInfo;
+  /** Optional. Rate limit information from the API response. May be undefined if not applicable or not provided by the server. */
+  rateLimit?: RateLimitInfo;
 }
 
 /** Combined result for a successful contact action (block/unblock) API call. */
 export interface ContactActionResult {
   response: ContactActionResponse;
-  rateLimit: RateLimitInfo;
+  /** Optional. Rate limit information from the API response. May be undefined if not applicable or not provided by the server. */
+  rateLimit?: RateLimitInfo;
 }
