@@ -35,14 +35,12 @@ describe('Group Type Definitions', () => {
 
   const mockAdminParticipant: GroupParticipant = {
     id: 'admin@s.whatsapp.net',
-    isAdmin: true,
-    isSuperAdmin: true,
+    admin: "superadmin",
   };
 
   const mockParticipant: GroupParticipant = {
     id: 'participant@s.whatsapp.net',
-    isAdmin: false,
-    isSuperAdmin: false,
+    // admin is undefined for regular participants
   };
 
   const mockBasicGroupInfo: BasicGroupInfo = {
@@ -77,11 +75,10 @@ describe('Group Type Definitions', () => {
     it('GroupParticipant type should be correct', () => {
       const admin: GroupParticipant = { ...mockAdminParticipant };
       expect(admin.id).toBe('admin@s.whatsapp.net');
-      expect(admin.isAdmin).toBe(true);
-      expect(admin.isSuperAdmin).toBe(true);
+      expect(admin.admin).toBe("superadmin");
 
       const member: GroupParticipant = { ...mockParticipant };
-      expect(member.isAdmin).toBe(false);
+      expect(member.admin).toBeUndefined();
     });
 
     it('BasicGroupInfo type should be correct', () => {
@@ -109,7 +106,7 @@ describe('Group Type Definitions', () => {
       expect(metadata.subjectOwner).toBe('subjectOwner@s.whatsapp.net');
       expect(metadata.subjectTime).toBe(1678886400);
       expect(metadata.participants.length).toBe(2);
-      expect(metadata.participants[0].isSuperAdmin).toBe(true);
+      expect(metadata.participants[0].admin).toBe("superadmin");
       expect(metadata.subject).toBe('Test Group Subject');
     });
      it('GroupMetadata type should allow optional owner and desc fields', () => {
@@ -222,7 +219,7 @@ describe('Group Type Definitions', () => {
       };
       expect(response.success).toBe(true);
       expect(response.data.length).toBe(2);
-      expect(response.data[0].isAdmin).toBe(true);
+      expect(response.data[0].admin).toBe("superadmin");
     });
 
     it('ModifyGroupParticipantsResponse type should be correct', () => {
@@ -279,7 +276,7 @@ describe('Group Type Definitions', () => {
         response: { success: true, message: 'Participants fetched', data: [mockParticipant] },
         rateLimit: mockRateLimitInfo,
       };
-      expect(result.response.data[0].isSuperAdmin).toBe(false);
+      expect(result.response.data[0].admin).toBeUndefined();
       expect(result.rateLimit).toBeDefined();
       if (result.rateLimit) {
         expect(result.rateLimit.getResetTimestampAsDate!()).toBeInstanceOf(Date);

@@ -10,10 +10,8 @@ import { RateLimitInfo, WasenderSuccessResponse } from "./messages.ts";
 export interface GroupParticipant {
   /** The id (Jabber ID) of the participant. */
   id: string;
-  /** Indicates if the participant is an admin in the group. */
-  isAdmin: boolean;
-  /** Indicates if the participant is a super admin (owner/creator) of the group. */
-  isSuperAdmin: boolean; // Corrected from isSuperAdmin to match common WhatsApp terminology if applicable or keep as is if API specific
+  /** Indicates the admin status of the participant (e.g., "admin", "superadmin"). Undefined if not an admin. */
+  admin?: "admin" | "superadmin";
 }
 
 export interface BasicGroupInfo {
