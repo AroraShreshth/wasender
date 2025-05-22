@@ -2,7 +2,7 @@
 
 This document provides detailed examples for sending various types of messages using the Wasender TypeScript SDK.
 
-## SDK Version: 0.1.0
+## SDK Version: 0.1.5
 
 ## Prerequisites
 

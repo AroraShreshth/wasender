@@ -2,7 +2,7 @@
 
 This document explains how to send messages to WhatsApp Channels (within Communities) using the Wasender TypeScript SDK.
 
-## SDK Version: 0.1.0
+## SDK Version: 0.1.5
 
 ## Overview
 

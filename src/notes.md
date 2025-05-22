@@ -2,7 +2,7 @@
 
 This document provides examples of how to use the Wasender TypeScript SDK to send various types of messages, handle errors, inspect rate limiting information, configure custom fetch implementations, utilize optional retry mechanisms, and process incoming webhooks.
 
-### SDK Version: 0.1.0
+### SDK Version: 0.1.5
 
 ### Prerequisites
 
@@ -99,7 +99,7 @@ async function sendDemoMessages() {
     const textPayload: TextOnlyMessage = {
       messageType: "text",
       to: "+1234567890",
-      text: "Hello from SDK v0.1.0!",
+      text: "Hello from SDK v0.1.5!",
     };
     let result = await wasender.send(textPayload);
     console.log("Text Sent:", result.response.message);
@@ -142,4 +142,4 @@ export interface WebhookRequestAdapter {
 
 Detailed examples for Express.js and Cloudflare Workers have been moved to the [Webhook Documentation](./docs/webhook.md#detailed-examples).
 
-This SDK version (0.1.0) provides integrated support for sending messages and handling incoming webhooks.
+This SDK version (0.1.5) provides integrated support for sending messages and handling incoming webhooks.

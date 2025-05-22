@@ -153,7 +153,7 @@ async function runAllMessageExamples() {
     const audioPayload: AudioUrlMessage = {
       to: recipientPhoneNumber,
       messageType: "audio",
-      audioUrl: "https://file-examples.com/storage/fe15fd9e66682b77ba42822/2017/11/file_example_MP3_700KB.mp3", // Placeholder, replace with valid public audio URL
+      audioUrl: "https://file-examples.com/storage/fe4a1fdc54682dc65a37ab9/2017/11/file_example_MP3_700KB.mp3", // Placeholder, replace with valid public audio URL
       // text: "Listen to this audio." // Optional
     };
     await sendMessageExample("Sending Audio Message (Voice Note)", wasender, audioPayload);
