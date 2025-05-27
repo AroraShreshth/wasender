@@ -8,12 +8,12 @@ import { RateLimitInfo, WasenderSuccessResponse } from "./messages.ts";
 // ---------- Session Data Structures ----------
 
 export type WhatsAppSessionStatus = 
-  | "CONNECTED"
-  | "DISCONNECTED"
-  | "NEED_SCAN"
-  | "CONNECTING" 
-  | "LOGGED_OUT"
-  | "EXPIRED";
+  | "connected"
+  | "disconnected"
+  | "need_scan"
+  | "connecting" 
+  | "logged_out"
+  | "expired";
 
 export interface WhatsAppSession {
   id: number;
