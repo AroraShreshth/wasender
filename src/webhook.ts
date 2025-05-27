@@ -76,7 +76,7 @@ export type WasenderWebhookEventType = typeof WasenderWebhookEventType[keyof typ
  */
 export interface BaseWebhookEvent<T extends WasenderWebhookEventType, D = any> {
   /** The type of the event. */
-  type: T;
+  event: T;
   /** Timestamp of the event generation (example, confirm actual structure). */
   timestamp?: number; // Unix timestamp
   /** The actual data payload for the event. Can be a single object or an array of objects. */
