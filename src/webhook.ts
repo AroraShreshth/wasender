@@ -252,8 +252,8 @@ export type WasenderWebhookEvent =
 /*
 // Example of how to process different event types after parsing:
 function processParsedWebhookEvent(event: WasenderWebhookEvent) {
-  console.log('Processing event type:', event.type);
-  switch (event.type) {
+  console.log('Processing event type:', event.event);
+  switch (event.event) {
     case WasenderWebhookEventType.MessagesUpsert:
       console.log('New message from:', event.data.key.remoteId, 'ID:', event.data.key.id);
       if (event.data.message?.conversation) {

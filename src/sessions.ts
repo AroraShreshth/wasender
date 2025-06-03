@@ -7,11 +7,11 @@ import { RateLimitInfo, WasenderSuccessResponse } from "./messages.ts";
 
 // ---------- Session Data Structures ----------
 
-export type WhatsAppSessionStatus = 
+export type WhatsAppSessionStatus =
   | "connected"
   | "disconnected"
   | "need_scan"
-  | "connecting" 
+  | "connecting"
   | "logged_out"
   | "expired";
 

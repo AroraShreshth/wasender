@@ -51,7 +51,7 @@ describe('Session Type Definitions', () => {
     id: 1,
     name: 'Business WhatsApp',
     phone_number: '+1234567890',
-    status: 'CONNECTED',
+    status: 'connected',
     account_protection: true,
     log_messages: true,
     webhook_url: 'https://example.com/webhook',
@@ -66,15 +66,15 @@ describe('Session Type Definitions', () => {
       const session: WhatsAppSession = { ...mockWhatsAppSession };
       expect(session.id).toBe(1);
       expect(session.name).toBe('Business WhatsApp');
-      expect(session.status).toBe<WhatsAppSessionStatus>('CONNECTED');
+      expect(session.status).toBe<WhatsAppSessionStatus>('connected');
       expect(session.webhook_events).toEqual(['message', 'group_update']);
     });
 
     it('WhatsAppSessionStatus type should allow valid statuses', () => {
-      const status1: WhatsAppSessionStatus = 'CONNECTED';
-      const status2: WhatsAppSessionStatus = 'NEED_SCAN';
-      expect(status1).toBe('CONNECTED');
-      expect(status2).toBe('NEED_SCAN');
+      const status1: WhatsAppSessionStatus = 'connected';
+      const status2: WhatsAppSessionStatus = 'need_scan';
+      expect(status1).toBe('connected');
+      expect(status2).toBe('need_scan');
     });
   });
 
@@ -126,19 +126,19 @@ describe('Session Type Definitions', () => {
   describe('API Response Data Structures', () => {
     it('ConnectSessionResponseData type should be correct (NEED_SCAN)', () => {
       const data: ConnectSessionResponseData = {
-        status: 'NEED_SCAN',
+        status: 'need_scan',
         qrCode: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACA...',
       };
-      expect(data.status).toBe<WhatsAppSessionStatus>('NEED_SCAN');
+      expect(data.status).toBe<WhatsAppSessionStatus>('need_scan');
       expect(data.qrCode).toBe('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACA...');
     });
     
     it('ConnectSessionResponseData type should be correct (CONNECTED)', () => {
       const data: ConnectSessionResponseData = {
-        status: 'CONNECTED',
+        status: 'connected',
         message: 'Session already connected'
       };
-      expect(data.status).toBe<WhatsAppSessionStatus>('CONNECTED');
+      expect(data.status).toBe<WhatsAppSessionStatus>('connected');
       expect(data.message).toBe('Session already connected');
       expect(data.qrCode).toBeUndefined();
     });
@@ -152,10 +152,10 @@ describe('Session Type Definitions', () => {
 
     it('DisconnectSessionResponseData type should be correct', () => {
       const data: DisconnectSessionResponseData = {
-        status: 'DISCONNECTED',
+        status: 'disconnected',
         message: 'WhatsApp session disconnected successfully',
       };
-      expect(data.status).toBe<WhatsAppSessionStatus>('DISCONNECTED');
+      expect(data.status).toBe<WhatsAppSessionStatus>('disconnected');
       expect(data.message).toBe('WhatsApp session disconnected successfully');
     });
     
@@ -169,8 +169,8 @@ describe('Session Type Definitions', () => {
     });
 
     it('SessionStatusData type should be correct', () => {
-      const data: SessionStatusData = { status: 'CONNECTED' };
-      expect(data.status).toBe<WhatsAppSessionStatus>('CONNECTED');
+      const data: SessionStatusData = { status: 'connected' };
+      expect(data.status).toBe<WhatsAppSessionStatus>('connected');
     });
   });
 
@@ -179,13 +179,13 @@ describe('Session Type Definitions', () => {
       const response: GetAllWhatsAppSessionsResponse = {
         success: true,
         message: 'Sessions retrieved successfully',
-        data: [mockWhatsAppSession, { ...mockWhatsAppSession, id: 2, name: 'Support WhatsApp', status: 'DISCONNECTED' }],
+        data: [mockWhatsAppSession, { ...mockWhatsAppSession, id: 2, name: 'Support WhatsApp', status: 'disconnected' }],
       };
       expect(response.success).toBe(true);
       expect(response.message).toBe('Sessions retrieved successfully');
       expect(response.data.length).toBe(2);
       expect(response.data[0].id).toBe(1);
-      expect(response.data[1].status).toBe<WhatsAppSessionStatus>('DISCONNECTED');
+      expect(response.data[1].status).toBe<WhatsAppSessionStatus>('disconnected');
     });
 
     it('GetWhatsAppSessionDetailsResponse type should be correct', () => {
@@ -203,12 +203,12 @@ describe('Session Type Definitions', () => {
       const response: CreateWhatsAppSessionResponse = {
         success: true,
         message: 'Session created successfully',
-        data: { ...mockWhatsAppSession, id: 3, status: 'DISCONNECTED' },
+        data: { ...mockWhatsAppSession, id: 3, status: 'disconnected' },
       };
       expect(response.success).toBe(true);
       expect(response.message).toBe('Session created successfully');
       expect(response.data.id).toBe(3);
-      expect(response.data.status).toBe<WhatsAppSessionStatus>('DISCONNECTED');
+      expect(response.data.status).toBe<WhatsAppSessionStatus>('disconnected');
     });
 
     it('UpdateWhatsAppSessionResponse type should be correct', () => {
@@ -237,11 +237,11 @@ describe('Session Type Definitions', () => {
       const response: ConnectSessionResponse = {
         success: true,
         message: 'Connect action processed',
-        data: { status: 'NEED_SCAN', qrCode: 'qrdata...' },
+        data: { status: 'need_scan', qrCode: 'qrdata...' },
       };
       expect(response.success).toBe(true);
       expect(response.message).toBe('Connect action processed');
-      expect(response.data.status).toBe<WhatsAppSessionStatus>('NEED_SCAN');
+      expect(response.data.status).toBe<WhatsAppSessionStatus>('need_scan');
     });
 
     it('GetQRCodeResponse type should be correct', () => {
@@ -259,18 +259,18 @@ describe('Session Type Definitions', () => {
       const response: DisconnectSessionResponse = {
         success: true,
         message: 'Disconnect action processed',
-        data: { status: 'DISCONNECTED', message: 'Disconnected.' },
+        data: { status: 'disconnected', message: 'Disconnected.' },
       };
       expect(response.success).toBe(true);
       expect(response.message).toBe('Disconnect action processed');
-      expect(response.data.status).toBe<WhatsAppSessionStatus>('DISCONNECTED');
+      expect(response.data.status).toBe<WhatsAppSessionStatus>('disconnected');
     });
     
     it('GetSessionStatusResponse type should be correct (special structure)', () => {
       const response: GetSessionStatusResponse = {
-        status: 'CONNECTED',
+        status: 'connected',
       };
-      expect(response.status).toBe<WhatsAppSessionStatus>('CONNECTED');
+      expect(response.status).toBe<WhatsAppSessionStatus>('connected');
       // Check for absence of success/data fields if that's the contract
       expect((response as any).success).toBeUndefined();
       expect((response as any).data).toBeUndefined();
@@ -310,7 +310,7 @@ describe('Session Type Definitions', () => {
         rateLimit: mockRateLimitInfo,
       };
       expect(result.response.message).toBe('Session created');
-      expect(result.response.data.status).toBe('CONNECTED');
+      expect(result.response.data.status).toBe('connected');
       expect(result.rateLimit).toBeDefined();
       if (result.rateLimit) {
         expect(result.rateLimit.limit).toBe(100);
@@ -345,7 +345,7 @@ describe('Session Type Definitions', () => {
 
     it('ConnectSessionResult type should be correct', () => {
       const result: ConnectSessionResult = {
-        response: { success: true, message: 'Connect action done', data: { status: 'NEED_SCAN', qrCode: 'testQR' } },
+        response: { success: true, message: 'Connect action done', data: { status: 'need_scan', qrCode: 'testQR' } },
         rateLimit: mockRateLimitInfo,
       };
       expect(result.response.message).toBe('Connect action done');
@@ -371,7 +371,7 @@ describe('Session Type Definitions', () => {
 
     it('DisconnectSessionResult type should be correct', () => {
       const result: DisconnectSessionResult = {
-        response: { success: true, message: 'Disconnected action performed', data: { status: 'DISCONNECTED', message: 'Done' } },
+        response: { success: true, message: 'Disconnected action performed', data: { status: 'disconnected', message: 'Done' } },
         rateLimit: mockRateLimitInfo,
       };
       expect(result.response.message).toBe('Disconnected action performed');
@@ -396,10 +396,10 @@ describe('Session Type Definitions', () => {
     
     it('GetSessionStatusResult type should be correct', () => {
       const result: GetSessionStatusResult = {
-        response: { status: 'LOGGED_OUT' },
+        response: { status: 'logged_out' },
         rateLimit: mockRateLimitInfo,
       };
-      expect(result.response.status).toBe<WhatsAppSessionStatus>('LOGGED_OUT');
+      expect(result.response.status).toBe<WhatsAppSessionStatus>('logged_out');
       expect(result.rateLimit).toBeDefined();
       if (result.rateLimit) {
         expect(result.rateLimit.remaining).toBe(99);
@@ -441,7 +441,7 @@ describe('Session endpoints personal token tests', () => {
       ok: true,
       status: 200,
       headers: new Headers(),
-      json: () => Promise.resolve({ status: 'CONNECTED' })
+      json: () => Promise.resolve({ status: 'connected' })
     }) as jest.MockedFunction<FetchImplementation>;
 
     const testWasender = createWasender(apiKey, personalAccessToken, undefined, mockFetch);
@@ -481,7 +481,7 @@ describe('Session endpoints personal token tests', () => {
         data: {
           id: 1,
           name: 'Test Session',
-          status: 'DISCONNECTED'
+          status: 'disconnected'
         }
       })
     }) as jest.MockedFunction<FetchImplementation>;
