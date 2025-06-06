@@ -68,11 +68,11 @@ describe('Webhook handler', () => {
   };
 
   it('rejects missing signature', async () => {
-    await expect(handleWebhook(makeReq({ type: 'something' }))).rejects.toThrow('Invalid signature');
+    await expect(handleWebhook(makeReq({ event: 'something' }))).rejects.toThrow('Invalid signature');
   });
 
   it('rejects incorrect signature', async () => {
-    await expect(handleWebhook(makeReq({ type: 'something' }, 'wrongsecret'))).rejects.toThrow('Invalid signature');
+    await expect(handleWebhook(makeReq({ event: 'something' }, 'wrongsecret'))).rejects.toThrow('Invalid signature');
   });
 
   describe('Event Type Parsing', () => {
@@ -84,14 +84,14 @@ describe('Webhook handler', () => {
         unreadCount: 2,
       };
       const payload: ChatsUpsertEvent = {
-        type: WasenderWebhookEventType.ChatsUpsert,
+        event: WasenderWebhookEventType.ChatsUpsert,
         timestamp: 1633456789,
         data: [chatEntry],
         sessionId: 'session-id-123',
       };
     const req = makeReq(payload, SECRET);
     const evt = await handleWebhook(req);
-      expect(evt.type).toBe(WasenderWebhookEventType.ChatsUpsert);
+      expect(evt.event).toBe(WasenderWebhookEventType.ChatsUpsert);
       expect(evt.data).toEqual([chatEntry]);
       expect(evt.timestamp).toBe(1633456789);
       expect(evt.sessionId).toBe('session-id-123');
@@ -104,23 +104,23 @@ describe('Webhook handler', () => {
             conversationTimestamp: 1633456789
         };
         const payload: ChatsUpdateEvent = {
-            type: WasenderWebhookEventType.ChatsUpdate,
+            event: WasenderWebhookEventType.ChatsUpdate,
             timestamp: 1633456789,
             data: [chatUpdateData]
         };
         const evt = await handleWebhook(makeReq(payload, SECRET)) as ChatsUpdateEvent;
-        expect(evt.type).toBe(WasenderWebhookEventType.ChatsUpdate);
+        expect(evt.event).toBe(WasenderWebhookEventType.ChatsUpdate);
         expect(evt.data).toEqual([chatUpdateData]);
     });
 
     it('parses ChatsDeleteEvent correctly', async () => {
         const payload: ChatsDeleteEvent = {
-            type: WasenderWebhookEventType.ChatsDelete,
+            event: WasenderWebhookEventType.ChatsDelete,
             timestamp: 1633456789,
             data: ["1234567890"]
         };
         const evt = await handleWebhook(makeReq(payload, SECRET)) as ChatsDeleteEvent;
-        expect(evt.type).toBe(WasenderWebhookEventType.ChatsDelete);
+        expect(evt.event).toBe(WasenderWebhookEventType.ChatsDelete);
         expect(evt.data).toEqual(["1234567890"]);
     });
 
@@ -136,12 +136,12 @@ describe('Webhook handler', () => {
         participants: [participant1, participant2],
       };
       const payload: GroupsUpsertEvent = {
-        type: WasenderWebhookEventType.GroupsUpsert,
+        event: WasenderWebhookEventType.GroupsUpsert,
         timestamp: 1633456789,
         data: [groupData],
       };
       const evt = await handleWebhook(makeReq(payload, SECRET));
-      expect(evt.type).toBe(WasenderWebhookEventType.GroupsUpsert);
+      expect(evt.event).toBe(WasenderWebhookEventType.GroupsUpsert);
       expect(evt.data).toEqual([groupData]);
     });
     
@@ -152,12 +152,12 @@ describe('Webhook handler', () => {
             restrict: false
         };
         const payload: GroupsUpdateEvent = {
-            type: WasenderWebhookEventType.GroupsUpdate,
+            event: WasenderWebhookEventType.GroupsUpdate,
             timestamp: 1633456789,
             data: [groupUpdateData]
         };
         const evt = await handleWebhook(makeReq(payload, SECRET)) as GroupsUpdateEvent;
-        expect(evt.type).toBe(WasenderWebhookEventType.GroupsUpdate);
+        expect(evt.event).toBe(WasenderWebhookEventType.GroupsUpdate);
         expect(evt.data).toEqual([groupUpdateData]);
     });
 
@@ -168,12 +168,12 @@ describe('Webhook handler', () => {
         action: 'add',
       };
       const payload: GroupParticipantsUpdateEvent = {
-        type: WasenderWebhookEventType.GroupParticipantsUpdate,
+        event: WasenderWebhookEventType.GroupParticipantsUpdate,
         timestamp: 1633456789,
         data: participantsUpdateData,
       };
       const evt = await handleWebhook(makeReq(payload, SECRET));
-      expect(evt.type).toBe(WasenderWebhookEventType.GroupParticipantsUpdate);
+      expect(evt.event).toBe(WasenderWebhookEventType.GroupParticipantsUpdate);
       expect(evt.data).toEqual(participantsUpdateData);
     });
 
@@ -186,12 +186,12 @@ describe('Webhook handler', () => {
         status: 'Hey there! I am using WhatsApp.',
       };
       const payload: ContactsUpsertEvent = {
-        type: WasenderWebhookEventType.ContactsUpsert,
+        event: WasenderWebhookEventType.ContactsUpsert,
         timestamp: 1633456789,
         data: [contactData],
       };
       const evt = await handleWebhook(makeReq(payload, SECRET));
-      expect(evt.type).toBe(WasenderWebhookEventType.ContactsUpsert);
+      expect(evt.event).toBe(WasenderWebhookEventType.ContactsUpsert);
       expect(evt.data).toEqual([contactData]);
     });
 
@@ -201,12 +201,12 @@ describe('Webhook handler', () => {
             imgUrl: "https://pps.whatsapp.net/v/t61.24694-24/123456789_123456789_123456789_123456789_123456789.jpg"
         };
         const payload: ContactsUpdateEvent = {
-            type: WasenderWebhookEventType.ContactsUpdate,
+            event: WasenderWebhookEventType.ContactsUpdate,
             timestamp: 1633456789,
             data: [contactUpdateData]
         };
         const evt = await handleWebhook(makeReq(payload, SECRET)) as ContactsUpdateEvent;
-        expect(evt.type).toBe(WasenderWebhookEventType.ContactsUpdate);
+        expect(evt.event).toBe(WasenderWebhookEventType.ContactsUpdate);
         expect(evt.data).toEqual([contactUpdateData]);
     });
 
@@ -215,12 +215,12 @@ describe('Webhook handler', () => {
       const messageContent: MessageContent = { conversation: 'Hello, I have a question' };
       const messageData: MessagesUpsertData = { key: messageKey, message: messageContent };
       const payload: MessagesUpsertEvent = {
-        type: WasenderWebhookEventType.MessagesUpsert,
+        event: WasenderWebhookEventType.MessagesUpsert,
         timestamp: 1633456789,
         data: messageData,
       };
       const evt = await handleWebhook(makeReq(payload, SECRET));
-      expect(evt.type).toBe(WasenderWebhookEventType.MessagesUpsert);
+      expect(evt.event).toBe(WasenderWebhookEventType.MessagesUpsert);
       expect(evt.data).toEqual(messageData);
     });
 
@@ -229,12 +229,12 @@ describe('Webhook handler', () => {
       const messageUpdate: MessageUpdate = { status: 'delivered' };
       const updateEntry: MessagesUpdateDataEntry = { key: messageKey, update: messageUpdate };
       const payload: MessagesUpdateEvent = {
-        type: WasenderWebhookEventType.MessagesUpdate,
+        event: WasenderWebhookEventType.MessagesUpdate,
         timestamp: 1633456795,
         data: [updateEntry],
       };
       const evt = await handleWebhook(makeReq(payload, SECRET));
-      expect(evt.type).toBe(WasenderWebhookEventType.MessagesUpdate);
+      expect(evt.event).toBe(WasenderWebhookEventType.MessagesUpdate);
       expect(evt.data).toEqual([updateEntry]);
     });
     
@@ -245,14 +245,14 @@ describe('Webhook handler', () => {
             remoteId: "+1234567890"
         };
         const payload: MessagesDeleteEvent = {
-            type: WasenderWebhookEventType.MessagesDelete,
+            event: WasenderWebhookEventType.MessagesDelete,
             timestamp: 1633456800,
             data: {
                 keys: [messageKey]
             }
         };
         const evt = await handleWebhook(makeReq(payload, SECRET)) as MessagesDeleteEvent;
-        expect(evt.type).toBe(WasenderWebhookEventType.MessagesDelete);
+        expect(evt.event).toBe(WasenderWebhookEventType.MessagesDelete);
         expect(evt.data).toEqual({ keys: [messageKey] });
     });
 
@@ -261,36 +261,36 @@ describe('Webhook handler', () => {
       const messageContent: MessageContent = { conversation: 'This is my reply.' };
       const sentData: MessageSentData = { key: messageKey, message: messageContent, status: 'sent' };
       const payload: MessageSentEvent = {
-        type: WasenderWebhookEventType.MessageSent,
+        event: WasenderWebhookEventType.MessageSent,
         timestamp: 1633456790,
         data: sentData,
       };
       const evt = await handleWebhook(makeReq(payload, SECRET));
-      expect(evt.type).toBe(WasenderWebhookEventType.MessageSent);
+      expect(evt.event).toBe(WasenderWebhookEventType.MessageSent);
       expect(evt.data).toEqual(sentData);
     });
 
     it('parses SessionStatusEvent correctly', async () => {
       const statusData: SessionStatusData = { status: 'connected', session_id: 'session-id-123' };
       const payload: SessionStatusEvent = {
-        type: WasenderWebhookEventType.SessionStatus,
+        event: WasenderWebhookEventType.SessionStatus,
         timestamp: 1633456789,
         data: statusData,
       };
       const evt = await handleWebhook(makeReq(payload, SECRET));
-      expect(evt.type).toBe(WasenderWebhookEventType.SessionStatus);
+      expect(evt.event).toBe(WasenderWebhookEventType.SessionStatus);
       expect(evt.data).toEqual(statusData);
     });
 
     it('parses QrCodeUpdatedEvent correctly', async () => {
       const qrData: QrCodeUpdatedData = { qr: 'data:image/png;base64,...', session_id: 'session-id-123' };
       const payload: QrCodeUpdatedEvent = {
-        type: WasenderWebhookEventType.QrCodeUpdated,
+        event: WasenderWebhookEventType.QrCodeUpdated,
         timestamp: 1633456780,
         data: qrData,
       };
       const evt = await handleWebhook(makeReq(payload, SECRET));
-      expect(evt.type).toBe(WasenderWebhookEventType.QrCodeUpdated);
+      expect(evt.event).toBe(WasenderWebhookEventType.QrCodeUpdated);
       expect(evt.data).toEqual(qrData);
     });
 
@@ -299,12 +299,12 @@ describe('Webhook handler', () => {
       const reaction: Reaction = { text: '👍', key: reactionKey };
       const reactionEntry: MessagesReactionDataEntry = { key: reactionKey, reaction: reaction };
       const payload: MessagesReactionEvent = {
-        type: WasenderWebhookEventType.MessagesReaction,
+        event: WasenderWebhookEventType.MessagesReaction,
         timestamp: 1633456810,
         data: [reactionEntry],
       };
       const evt = await handleWebhook(makeReq(payload, SECRET));
-      expect(evt.type).toBe(WasenderWebhookEventType.MessagesReaction);
+      expect(evt.event).toBe(WasenderWebhookEventType.MessagesReaction);
       expect(evt.data).toEqual([reactionEntry]);
     });
 
@@ -313,13 +313,13 @@ describe('Webhook handler', () => {
         const receipt: Receipt = { userJid: 'recipient@s.whatsapp.net', status: 'read', t: 1633456815 };
         const receiptEntry: MessageReceiptUpdateDataEntry = { key: messageKey, receipt: receipt };
         const payload: MessageReceiptUpdateEvent = {
-            type: WasenderWebhookEventType.MessageReceiptUpdate,
+            event: WasenderWebhookEventType.MessageReceiptUpdate,
             timestamp: 1633456815,
             data: [receiptEntry],
             sessionId: 'session-1'
         };
         const evt = await handleWebhook(makeReq(payload, SECRET)) as MessageReceiptUpdateEvent;
-        expect(evt.type).toBe(WasenderWebhookEventType.MessageReceiptUpdate);
+        expect(evt.event).toBe(WasenderWebhookEventType.MessageReceiptUpdate);
         expect(evt.data).toEqual([receiptEntry]);
         expect(evt.sessionId).toBe('session-1');
     });
