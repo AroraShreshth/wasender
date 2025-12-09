@@ -8,10 +8,9 @@ import { RateLimitInfo, WasenderSuccessResponse } from "./messages";
 // ---------- Group Data Structures ----------
 
 export interface GroupParticipant {
-  /** The id (Jabber ID) of the participant. */
-  id: string;
-  /** Indicates if the participant is an admin in the group. */
-  admin?: string;
+  isAdmin?: boolean
+  isSuperAdmin?: boolean
+  admin?: 'admin' | 'superadmin' | null
 }
 
 export interface BasicGroupInfo {
@@ -23,31 +22,51 @@ export interface BasicGroupInfo {
   imgUrl: string | null;
 }
 
+export type AddressingMode = 'lid' | 'pn'
+
 export interface GroupMetadata extends BasicGroupInfo {
-  /** Timestamp of when the group was created. */
-  creation: number;
-  /** The JID of the group owner/creator. */
-  owner: string | undefined;
-  /** The description of the group. */
-  desc?: string | null;
-  /** The owner of the group description. */
-  descOwner?: string | null;
-  /** The ID of the group description. */
-  descId?: string | null;
-  /** Whether the group is restricted to admin-only messages. */
-  restrict?: boolean;
-  /** Whether announcements are enabled for the group. */
-  announce?: boolean;
-  /** Size of the group. */
-  size?: number;
-  /** Owner of the group subject. */
-  subjectOwner?: string;
-  /** Timestamp when subject was last changed. */
-  subjectTime?: number;
-  /** Array of participants in the group. */
-  participants: GroupParticipant[];
-  /** The subject of the group. */
-  subject: string;
+  id: string
+  notify?: string
+  /** group uses 'lid' or 'pn' to send messages */
+  addressingMode?: AddressingMode
+  owner: string | undefined
+  ownerPn?: string | undefined
+  owner_country_code?: string | undefined
+  subject: string
+  /** group subject owner */
+  subjectOwner?: string
+  subjectOwnerPn?: string
+  /** group subject modification date */
+  subjectTime?: number
+  creation?: number
+  desc?: string
+  descOwner?: string
+  descOwnerPn?: string
+  descId?: string
+  descTime?: number
+  /** if this group is part of a community, it returns the jid of the community to which it belongs */
+  linkedParent?: string
+  /** is set when the group only allows admins to change group settings */
+  restrict?: boolean
+  /** is set when the group only allows admins to write messages */
+  announce?: boolean
+  /** is set when the group also allows members to add participants */
+  memberAddMode?: boolean
+  /** Request approval to join the group */
+  joinApprovalMode?: boolean
+  /** is this a community */
+  isCommunity?: boolean
+  /** is this the announce of a community */
+  isCommunityAnnounce?: boolean
+  /** number of group participants */
+  size?: number
+  // Baileys modified array
+  participants: GroupParticipant[]
+  ephemeralDuration?: number
+  inviteCode?: string
+  /** the person who added you to group or changed some setting in group */
+  author?: string
+  authorPn?: string
 }
 
 // ---------- API Request Payloads ----------

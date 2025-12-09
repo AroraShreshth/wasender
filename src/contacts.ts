@@ -9,20 +9,28 @@ import { WasenderSuccessResponse } from "./messages"; // Reusing generic success
 // ---------- Contact Data Structures ----------
 
 export interface Contact {
-  /** The id (Jabber ID) of the contact, typically a phone number. */
-  id: string;
-  /** The name of the contact as saved by the user. */
-  name?: string; // WhatsApp might not always provide this
-  /** The display name of the contact (push name). */
-  notify?: string;
-  /** The verified business name, if applicable. */
-  verifiedName?: string;
-  /** URL of the contact\'s profile picture. */
-  imgUrl?: string;
-  /** The contact\'s status message. */
-  status?: string;
-  /** Indicates if the contact exists on WhatsApp. */
-  exists?: boolean;
+  /** ID either in lid or jid format (preferred) **/
+  id: string
+  /** ID in LID format (@lid) **/
+  lid?: string
+  /** ID in PN format (@s.whatsapp.net)  **/
+  phoneNumber?: string
+  /** name of the contact, you have saved on your WA */
+  name?: string
+  /** name of the contact, the contact has set on their own on WA */
+  notify?: string
+  /** I have no idea */
+  verifiedName?: string
+  // Baileys Added
+  /**
+   * Url of the profile picture of the contact
+   *
+   * 'changed' => if the profile picture has changed
+   * null => if the profile picture has not been set (default profile picture)
+   * any other string => url of the profile picture
+   */
+  imgUrl?: string | null
+  status?: string
 }
 
 // ---------- API Response Types for Contacts ----------

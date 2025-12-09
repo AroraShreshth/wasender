@@ -23,6 +23,8 @@ export interface ImageUrlMessage extends BaseMessage {
   messageType: 'image';
   /** URL of the image to send. Supported: JPEG, PNG. Max size: 5MB. */
   imageUrl: string;
+    /** If true, sends the image as a viewOnce */
+  viewOnce?: boolean; // Optional field to send image as view-once
   // `text` (caption) is optional for image messages
 }
 
@@ -30,6 +32,8 @@ export interface VideoUrlMessage extends BaseMessage {
   messageType: 'video';
   /** URL of the video to send. Supported: MP4, 3GPP. Max size: 16MB. */
   videoUrl: string;
+    /** If true, sends the video as a viewOnce */
+  viewOnce?: boolean;
   // `text` (caption) is optional for video messages
 }
 
@@ -44,6 +48,8 @@ export interface AudioUrlMessage extends BaseMessage {
   messageType: 'audio';
   /** URL of the audio file to send (sent as voice note). Supported: AAC, MP3, OGG, AMR. Max size: 16MB. */
   audioUrl: string;
+  /** If true, sends the audio as a viewOnce */
+  viewOnce?: boolean;
   // `text` is typically not used with audioUrl (voice notes) but allowed by API
 }
 
